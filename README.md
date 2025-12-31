@@ -1,5 +1,6 @@
-## Hi there 👋
+## Welcome to Find My Pilot Base
 
+A place where current and prospective pilots can get help finding their ideal airline.
 <!--
 **findmypilotbase/findmypilotbase** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
