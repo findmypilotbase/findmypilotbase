@@ -82,7 +82,8 @@
     <div class="container my-4">
         <h1 class="text-center mb-4">Find My Pilot Base</h1>
         <p class="text-center mb-3">Use this interactive map to explore pilot domiciles across various airlines. Filter by categories, airlines, domiciles, or states to customize your view and see detailed information about bases, including associated carriers and hiring links.</p>
-        <p class="text-center mb-4">Click here to view our detailed info on each airline, including seniority and juniority of bases, commuting ease versus living in-base, base stability and growth potential, quality of life factors like schedules and aircraft types, pay rates, upgrade timelines, and pilot reviews to help you pick your ideal company and base.</p>
+        <p class="text-center mb-4">Scroll down below the map to find links directly to each airline's hiring page. You can also click the link within the filters dropdown.</p>
+        <p class="text-center mb-4">To provide feedback, please email us at <a href="mailto:findmypilotbase@gmail.com">FindMyPilotBase@gmail.com</a>.</p>
 
         <!-- Filter Controls Section - Collapsible -->
         <div class="accordion filter-section" id="filterAccordion">
@@ -142,14 +143,12 @@
 
     <!-- RAW TEXT DATA -->
     <pre id="rawData" class="raw-data">
-        
 # Legacy Carriers
 Alaska Airlines | https://careers.alaskaair.com/career-opportunities/pilots/alaska-airlines/ | ANC, LAX, PDX, SEA, SFO
 American Airlines | https://jobs.aa.com/go/Pilot/9286400/ | BOS, CLT, DCA, DFW, LAX, LGA, MIA, ORD, PHL, PHX
 Delta Air Lines | https://www.delta.com/us/en/careers/pilots/overview | ATL, DTW, LAX, MSP, NYC, SEA, SLC
 Hawaiian Airlines | https://www.hawaiianairlines.com/careers/first-officer | CVG, HNL
 United Airlines | https://careers.united.com/us/en/pilots | CLE, DEN, EWR, GUM, IAD, IAH, LAX, MCO, ORD, TPA, SFO
-        
 # Major / National / Low Cost Carriers (LCC)
 Airbahn Airlines | (No dedicated pilot careers page found; check airlinepilotcentral.com) | ONT
 Allegiant Air | https://www.allegiantair.com/careers/pilots | ABE, ATW, AVL, BLI, BNA, CVG, DSM, FLL, FNT, GRR, IND, IWA, LAS, LAX, PGD, PIE, PIT, PVU, SAV, SFB, TYS, VPS
@@ -160,7 +159,6 @@ JetBlue Airways | https://careers.jetblue.com/go/First-Officer/8044500/ | BOS, E
 Southwest Airlines | https://careers.southwestair.com/pilots | ATL, BNA, BWI, DAL, DEN, HOU, MCO, MDW, LAS, LAX, OAK, PHX
 Spirit Airlines | https://careers.spirit.com/pilots-go-further | ACY, ATL, DFW, DTW, FLL, IAH, LAS, MCO, MIA
 Sun Country Airlines | https://careers.suncountry.com/pilots | MSP
-        
 # Cargo Airlines
 ABX Air | (Check airlinepilotcentral.com) | CVG, ILN
 Atlas Air | (Check airlinepilotcentral.com) | MIA
@@ -171,7 +169,6 @@ Kalitta Air | (Check airlinepilotcentral.com) | CVG, JFK
 Key Lime Air | (Check airlinepilotcentral.com) | DEN
 Mountain Air Cargo | (Check airlinepilotcentral.com) | DEN, MEM
 United Parcel Service | (Check airlinepilotcentral.com) | SDF, MIA, ONT
-        
 # Regional Airlines
 Cape Air | (Check airlinepilotcentral.com) | HYA, BOS, STL
 CommuteAir | (Check airlinepilotcentral.com) | IAD, IAH
@@ -473,4 +470,141 @@ FlexJet | https://careers.flexjet.com/us/en/US-pilot | ABQ, ALB, ATL, ATW, AUS, 
         }
 
         // Airplane SVG (Bootstrap Icons - open source)
-        const airplaneSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%color"><path d="M6.428 1.151C6.708.591 7.213 0 8 0s1.292.592 1.572 1.151C9.861 1.73 10 2.431 10 3v3.691l5.17 2.585a1.5 1.5 0 0 1 .83 1.342V12a.5.5 0 0 1-.582.493l-5.507-.918-.375 2.253 1.318 1.318A.5.5 0 0 1 10.5 16h-5a.5.5 0 0 1-.354-.854l1.319-1.318-.376-2.253-5.507.918A.5.5 0 0 1 0 12v-1.382a1.5 1.5 0 0 1 .83-1.342L6 6.691V3c0-.568.14-1.271.428-1.849m.894.448C7.111 2.02 7 2.569 7 3v4a.5.5 0 0 1-.276.447l-
+        const airplaneSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%color"><path d="M6.428 1.151C6.708.591 7.213 0 8 0s1.292.592 1.572 1.151C9.861 1.73 10 2.431 10 3v3.691l5.17 2.585a1.5 1.5 0 0 1 .83 1.342V12a.5.5 0 0 1-.582.493l-5.507-.918-.375 2.253 1.318 1.318A.5.5 0 0 1 10.5 16h-5a.5.5 0 0 1-.354-.854l1.319-1.318-.376-2.253-5.507.918A.5.5 0 0 1 0 12v-1.382a1.5 1.5 0 0 1 .83-1.342L6 6.691V3c0-.568.14-1.271.428-1.849m.894.448C7.111 2.02 7 2.569 7 3v4a.5.5 0 0 1-.276.447l-5.448 2.724a.5.5 0 0 0-.276.447v.792l5.418-.903a.5.5 0 0 1 .575.41l.5 3a.5.5 0 0 1-.14.437L6.708 15h2.586l-.647-.646a.5.5 0 0 1-.14-.436l.5-3a.5.5 0 0 1 .576-.411L15 11.41v-.792a.5.5 0 0 0-.276-.447L9.276 7.447A.5.5 0 0 1 9 7V3c0-.432-.11-.979-.322-1.401C8.458 1.159 8.213 1 8 1s-.458.158-.678.599"/></svg>`;
+
+        const categoryColors = {
+            "Legacy Carriers": "#0066cc",
+            "Major / National / Low Cost Carriers (LCC)": "#cc0000",
+            "Cargo Airlines": "#ff8800",
+            "Regional Airlines": "#9900cc"
+        };
+
+        function getAirplaneIcon(primaryCategory) {
+            const color = categoryColors[primaryCategory] || "#808080";
+            const svg = airplaneSvg.replace("%color", color.replace("#","%23"));
+            const iconUrl = 'data:image/svg+xml,' + svg;
+            return L.icon({
+                iconUrl: iconUrl,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -16]
+            });
+        }
+
+        function buildMarkers() {
+            clusterGroup.clearLayers();
+            const selectedCategories = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(cb => cb.value);
+            const selectedAirlines = Array.from(document.querySelectorAll('#airlineFilters input:checked')).map(cb => cb.value);
+            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input:checked')).map(cb => cb.value);
+            const selectedStates = Array.from(document.querySelectorAll('#stateFilters input:checked')).map(cb => cb.value);
+
+            geojson.features.forEach(feature => {
+                const code = feature.properties.code;
+                if (!domicileData[code]) return;
+
+                const dom = domicileData[code];
+                const airportState = airportInfo[code]?.state || '';
+                const matchesCategory = selectedCategories.length === 0 || dom.categories.some(c => selectedCategories.includes(c));
+                const matchesAirline = selectedAirlines.length === 0 || dom.airlines.some(a => selectedAirlines.includes(a));
+                const matchesDomicile = selectedDomiciles.length === 0 || selectedDomiciles.includes(code);
+                const matchesState = selectedStates.length === 0 || selectedStates.includes(airportState);
+
+                if (matchesCategory && matchesAirline && matchesDomicile && matchesState) {
+                    const primaryCategory = dom.categories[0];
+                    const marker = L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], {
+                        icon: getAirplaneIcon(primaryCategory)
+                    });
+
+                    let popupContent = `<b>${code} - ${feature.properties.name}</b><br><br>`;
+                    const grouped = {};
+                    dom.categories.forEach(cat => grouped[cat] = []);
+                    dom.airlines.forEach(airline => {
+                        for (const catObj of linkData) {
+                            if (catObj.links.some(l => l.name === airline)) {
+                                grouped[catObj.category].push(`<a href="${dom.urls[airline]}" target="_blank">${airline}</a>`);
+                                break;
+                            }
+                        }
+                    });
+                    popupContent += Object.keys(grouped).sort().map(cat => `<strong>${cat}:</strong><br>${grouped[cat].join('<br>') || 'None'}<br><br>`).join('');
+                    marker.bindPopup(popupContent);
+                    clusterGroup.addLayer(marker);
+                }
+            });
+        }
+
+        function buildFilters() {
+            const categories = linkData.map(c => c.category);
+            const allAirlines = linkData.flatMap(c => c.links.map(l => ({name: l.name, url: l.url, category: c.category})));
+            const allDomiciles = Object.keys(domicileData).sort();
+
+            const catDiv = document.getElementById('categoryFilters');
+            categories.forEach(cat => {
+                catDiv.innerHTML += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${cat}" id="cat-${cat.replace(/[^a-z0-9]/gi,'')}" checked><label class="form-check-label" for="cat-${cat.replace(/[^a-z0-9]/gi,'')}">${cat}</label></div>`;
+            });
+
+            const airlineDiv = document.getElementById('airlineFilters');
+            linkData.forEach(cat => {
+                airlineDiv.innerHTML += `<div class="category-divider">${cat.category}</div>`;
+                cat.links.forEach(l => {
+                    const safeId = l.name.replace(/[^a-z0-9]/gi,'');
+                    airlineDiv.innerHTML += `<div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="${l.name}" id="air-${safeId}" checked>
+                        <label class="form-check-label" for="air-${safeId}">
+                            <a href="${l.url}" target="_blank">${l.name}</a>
+                        </label>
+                    </div>`;
+                });
+            });
+
+            const domDiv = document.getElementById('domicileFilters');
+            // Build stateToDomiciles
+            let stateToDomiciles = {};
+            Object.keys(domicileData).forEach(code => {
+                const state = airportInfo[code]?.state || 'Other';
+                if (!stateToDomiciles[state]) stateToDomiciles[state] = [];
+                stateToDomiciles[state].push(code);
+            });
+
+            // Sort states
+            const sortedStates = Object.keys(stateToDomiciles).sort();
+
+            sortedStates.forEach(state => {
+                domDiv.innerHTML += `<div class="category-divider">${state}</div>`;
+                stateToDomiciles[state].sort().forEach(code => {
+                    const info = airportInfo[code] || { name: code, city: '', state: '' };
+                    const tooltip = `${info.name} (${info.city ? info.city + ', ' : ''}${info.state})`;
+                    domDiv.innerHTML += `<div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="${code}" id="dom-${code}" checked>
+                        <label class="form-check-label domicile-label" for="dom-${code}" title="${tooltip}">${code}</label>
+                    </div>`;
+                });
+            });
+
+            const stateDiv = document.getElementById('stateFilters');
+            Array.from(stateSet).sort().forEach(state => {
+                stateDiv.innerHTML += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${state}" id="state-${state}" checked><label class="form-check-label state-label" for="state-${state}">${state}</label></div>`;
+            });
+
+            document.querySelectorAll('.form-check-input').forEach(cb => cb.addEventListener('change', applyFilters));
+        }
+
+        function applyFilters() {
+            buildMarkers();
+        }
+
+        function searchLinks() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.btn-custom').forEach(btn => {
+                btn.style.display = btn.textContent.toLowerCase().includes(query) ? 'inline-block' : 'none';
+            });
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                const visible = item.querySelectorAll('.btn-custom[style*="inline-block"]').length > 0;
+                item.style.display = visible ? 'block' : 'none';
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', searchLinks);
+    </script>
+</body>
+</html>
