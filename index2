@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find My Pilot Base</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet MarkerCluster -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .btn-custom {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 20px;
+            margin: 5px;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+        .btn-custom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background-color: #e9ecef;
+        }
+        .search-bar { max-width: 500px; margin: 20px auto; }
+        .accordion-button { font-weight: 600; color: #2c3e50; }
+        #map { height: 70vh; margin-top: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .filter-section {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+        .filter-group { margin-bottom: 10px; }
+        .filter-group h5 { margin-bottom: 5px; font-size: 1rem; }
+        .select-all-btn { font-size: 0.75rem; margin-left: 5px; }
+        .domicile-label { cursor: help; text-decoration: underline dotted; }
+        .state-label { cursor: help; }
+        .category-divider {
+            margin: 8px 0 5px;
+            font-weight: bold;
+            color: #495057;
+            border-top: 1px solid #dee2e6;
+            padding-top: 5px;
+        }
+        .global-select { font-size: 1.25rem; margin-left: 10px; }
+        .filter-header {
+            margin-bottom: 10px;
+        }
+        .raw-data { display: none; }
+        #airlineFilters {
+            overflow-y: auto;
+            max-height: 250px;
+        }
+        #domicileFilters {
+            overflow-y: auto;
+            max-height: 250px;
+        }
+        #stateFilters {
+            overflow-y: auto;
+            max-height: 250px;
+        }
+        @media (max-width: 576px) {
+            .filter-section { padding: 5px; }
+            .filter-group h5 { font-size: 0.9rem; }
+            #map { height: 60vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+        <h1 class="text-center mb-4">Find My Pilot Base</h1>
+        <p class="text-center mb-3">Use this interactive map to explore pilot domiciles across various airlines. Filter by categories, airlines, domiciles, or states to customize your view and see detailed information about bases, including associated carriers and hiring links.</p>
+        <p class="text-center mb-4">Scroll down below the map to find links directly to each airline's hiring page. You can also click the link within the filters dropdown.</p>
+        <p class="text-center mb-4">To provide feedback, please email us at <a href="mailto:findmypilotbase@gmail.com">FindMyPilotBase@gmail.com</a>.</p>
+
+        <!-- Filter Controls Section - Collapsible -->
+        <div class="accordion filter-section" id="filterAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                        Filter Map Markers
+                    </button>
+                </h2>
+                <div id="filterCollapse" class="accordion-collapse collapse" aria-labelledby="filterHeader">
+                    <div class="accordion-body p-2">
+                        <div class="global-select mb-2 text-center">
+                            <a href="#" id="globalSelectAll">All</a> | <a href="#" id="globalDeselectAll">None</a>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 filter-group">
+                                <h5>Categories <a href="#" class="select-all-btn" data-group="category" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="category" data-action="deselect">None</a></h5>
+                                <div id="categoryFilters"></div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 filter-group">
+                                <h5>Airlines <a href="#" class="select-all-btn" data-group="airline" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="airline" data-action="deselect">None</a></h5>
+                                <div id="airlineFilters"></div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 filter-group">
+                                <h5>Domiciles <a href="#" class="select-all-btn" data-group="domicile" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="domicile" data-action="deselect">None</a></h5>
+                                <div id="domicileFilters"></div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 filter-group">
+                                <h5>States <a href="#" class="select-all-btn" data-group="state" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="state" data-action="deselect">None</a></h5>
+                                <div id="stateFilters"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Map Section -->
+        <div id="map"></div>
+
+        <!-- Search Bar with Clear Button (below map) -->
+        <div class="search-bar mt-4">
+            <div class="input-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search airline hiring links..." aria-label="Search links">
+                <button class="btn btn-outline-secondary" type="button" id="clearSearch">Clear</button>
+            </div>
+        </div>
+
+        <!-- Hiring Links Accordion (at bottom) -->
+        <div id="accordionLinks" class="accordion mt-3"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
+    <!-- RAW TEXT DATA -->
+    <pre id="rawData" class="raw-data">
+# Legacy Carriers
+Alaska Airlines | https://careers.alaskaair.com/career-opportunities/pilots/alaska-airlines/ | ANC, LAX, PDX, SEA, SFO
+American Airlines | https://jobs.aa.com/go/Pilot/9286400/ | BOS, CLT, DCA, DFW, LAX, LGA, MIA, ORD, PHL, PHX
+Delta Air Lines | https://www.delta.com/us/en/careers/pilots/overview | ATL, DTW, LAX, MSP, NYC, SEA, SLC
+Hawaiian Airlines | https://www.hawaiianairlines.com/careers/first-officer | CVG, HNL
+United Airlines | https://careers.united.com/us/en/pilots | CLE, DEN, EWR, GUM, IAD, IAH, LAX, MCO, ORD, TPA, SFO
+# Major / National / Low Cost Carriers (LCC)
+Allegiant Air | https://www.allegiantair.com/careers/pilots | ABE, ATW, AVL, BLI, BNA, CVG, DSM, FLL, FNT, GRR, IND, IWA, LAS, LAX, PGD, PIE, PIT, PVU, SAV, SFB, TYS, VPS
+Avelo Airlines | https://www.aveloair.com/pilots | BDL, ELP, HVN, ILG, IWA, LAL, MCO, RDU
+Breeze Airways | https://jobs.flybreeze.com/ | BDL, CHS, MCO, MSY, ORF, PVD, PVU, RSW, TPA, VRB
+Frontier Airlines | https://www.flyfrontier.com/careers/pilot/ | ATL, CLE, CVG, DEN, DFW, LAS, MCO, MDW, MIA, ORD, PHL, PHX, TPA
+JetBlue Airways | https://careers.jetblue.com/go/First-Officer/8044500/ | BOS, EWR, FLL, JFK, LAX, MCO
+Southwest Airlines | https://careers.southwestair.com/pilots | ATL, BNA, BWI, DAL, DEN, HOU, MCO, MDW, LAS, LAX, OAK, PHX
+Spirit Airlines | https://careers.spirit.com/pilots-go-further | ACY, ATL, DFW, DTW, FLL, IAH, LAS, MCO, MIA
+Sun Country Airlines | https://careers.suncountry.com/pilots | MSP
+# Cargo Airlines
+ABX Air | https://airlinepilotcentral.com | CVG, ILN
+Atlas Air | https://airlinepilotcentral.com | MIA
+Empire Airlines | https://airlinepilotcentral.com | ANC, HNL
+Everts Air Cargo | https://airlinepilotcentral.com | ANC, FAI
+FedEx Express | https://careers.fedex.com/career-areas/pilot/ | ANC, IND, LAX, MEM, OAK
+Kalitta Air | https://airlinepilotcentral.com | CVG, JFK
+Key Lime Air | https://airlinepilotcentral.com | DEN
+Mountain Air Cargo | https://airlinepilotcentral.com | DEN, MEM
+United Parcel Service | https://airlinepilotcentral.com | SDF, MIA, ONT
+# Regional Airlines
+Cape Air | https://airlinepilotcentral.com | HYA, BOS, STL
+CommuteAir | https://airlinepilotcentral.com | IAD, IAH
+Endeavor Air | https://www.endeavorair.com/content/endeavor-air/en_us/careers/pilots.html | ATL, CVG, DTW, JFK, LGA, MSP, RDU
+Envoy Air | https://www.envoyair.com/careers/pilots/ | DFW, ORD, MIA, PHX
+GoJet Airlines | https://airlinepilotcentral.com | ORD, RDU, STL
+Horizon Air | https://careers.alaskaair.com/career-opportunities/pilots/horizon-air/ | ANC, BOI, GEG, MFR, PAE, PDX, SEA
+Mesa Airlines | https://careers.rjet.com/airline-careers/pilot/ | DFW, IAH, PHX
+Piedmont Airlines | https://piedmont-airlines.com/pilots/ | CLT, MDT, PHL
+PSA Airlines | https://www.psaairlines.com/first-officers/ | CLT, DAY, DCA, DFW, PHL
+Republic Airways | https://careers.rjet.com/airline-careers/pilot/ | BOS, CMH, CVG, DCA, EWR, IND, JFK, ORD, PHL
+SkyWest | https://www.skywest.com/skywest-airline-jobs/career-guides/pilot-jobs | DEN, DFW, DTW, LAX, MSP, ORD, PHX, SEA, SLC
+# Fractional Carriers
+NetJets | https://www.netjets.com/en-us/careers/ | ABQ, ALB, ATL, ATW, AUS, AVL, BDL, BHM, BNA, BOI, BOS, BTV, BUF, BUR, BWI, BZN, CAE, CHA, CHS, CID, CLE, CLT, CMH, COS, CVG, DAY, DCA, DEN, DFW, DSM, DTW, ECP, ELP, EUG, EWR, EYW, FAR, FAT, FSD, FLL, GEG, GRR, GSO, GSP, HOU, HPN, HRL, HSV, IAD, IAH, ICT, ILM, IND, JAN, JAX, JFK, LAS, LAX, LBB, LEX, LGA, LGB, LIT, MAF, MCI, MCO, MFR, MDT, MDW, MEM, MHT, MIA, MKE, MSP, MSN, MSY, MYR, OAK, OKC, OMA, ONT, ORD, ORF, PBI, PDX, PHL, PHX, PIT, PNS, PSP, PVD, PWM, RDM, RDU, RIC, RNO, ROC, RSW, SAN, SAT, SAV, SBA, SDF, SEA, SFO, SGF, SJC, SLC, SMF, SNA, SRQ, STL, SYR, TPA, TUL, TUS, TYS, VPS, XNA
+FlexJet | https://careers.flexjet.com/us/en/US-pilot/ | ABQ, ALB, ATL, ATW, AUS, AVL, BDL, BHM, BNA, BOI, BOS, BTV, BUF, BUR, BWI, BZN, CAE, CHA, CHS, CID, CLE, CLT, CMH, COS, CVG, DAY, DCA, DEN, DFW, DSM, DTW, ECP, ELP, EUG, EWR, EYW, FAR, FAT, FSD, FLL, GEG, GRR, GSO, GSP, HOU, HPN, HRL, HSV, IAD, IAH, ICT, ILM, IND, JAN, JAX, JFK, LAS, LAX, LBB, LEX, LGA, LGB, LIT, MAF, MCI, MCO, MFR, MDT, MDW, MEM, MHT, MIA, MKE, MSP, MSN, MSY, MYR, OAK, OKC, OMA, ONT, ORD, ORF, PBI, PDX, PHL, PHX, PIT, PNS, PSP, PVD, PWM, RDM, RDU, RIC, RNO, ROC, RSW, SAN, SAT, SAV, SBA, SDF, SEA, SFO, SGF, SJC, SLC, SMF, SNA, SRQ, STL, SYR, TPA, TUL, TUS, TYS, VPS, XNAX, SEA, SLC
+</pre>
+
+    <!-- MAP DATA -->
+    <script id="mapData" type="application/json">
+{
+  "type": "FeatureCollection",
+"features": [
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-149.9964,61.1744]},"properties":{"code":"ANC","name":"Ted Stevens Anchorage International","city":"Anchorage","state":"AK"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-118.4081,33.9425]},"properties":{"code":"LAX","name":"Los Angeles International","city":"Los Angeles","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.5967,45.5231]},"properties":{"code":"PDX","name":"Portland International","city":"Portland","state":"OR"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.3093,47.449]},"properties":{"code":"SEA","name":"Seattle-Tacoma International","city":"Seattle","state":"WA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.3755,37.6188]},"properties":{"code":"SFO","name":"San Francisco International","city":"San Francisco","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.0052,42.3643]},"properties":{"code":"BOS","name":"Boston Logan International","city":"Boston","state":"MA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.9431,35.214]},"properties":{"code":"CLT","name":"Charlotte Douglas International","city":"Charlotte","state":"NC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-77.0377,38.8521]},"properties":{"code":"DCA","name":"Ronald Reagan Washington National","city":"Washington","state":"DC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-97.038,32.8968]},"properties":{"code":"DFW","name":"Dallas/Fort Worth International","city":"Dallas/Fort Worth","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.8726,40.7772]},"properties":{"code":"LGA","name":"LaGuardia (New York)","city":"New York","state":"NY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.2906,25.7933]},"properties":{"code":"MIA","name":"Miami International","city":"Miami","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-87.9048,41.9786]},"properties":{"code":"ORD","name":"Chicago O'Hare International","city":"Chicago","state":"IL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-75.2411,39.8719]},"properties":{"code":"PHL","name":"Philadelphia International","city":"Philadelphia","state":"PA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-112.0116,33.4343]},"properties":{"code":"PHX","name":"Phoenix Sky Harbor International","city":"Phoenix","state":"AZ"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-84.4281,33.6367]},"properties":{"code":"ATL","name":"Hartsfield-Jackson Atlanta International","city":"Atlanta","state":"GA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-83.3534,42.2124]},"properties":{"code":"DTW","name":"Detroit Metropolitan Wayne County","city":"Detroit","state":"MI"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-93.2218,44.882]},"properties":{"code":"MSP","name":"Minneapolis-St. Paul International","city":"Minneapolis","state":"MN"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-111.9778,40.7884]},"properties":{"code":"SLC","name":"Salt Lake City International","city":"Salt Lake City","state":"UT"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-84.6678,39.0488]},"properties":{"code":"CVG","name":"Cincinnati/Northern Kentucky International","city":"Cincinnati","state":"KY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-157.9224,21.3187]},"properties":{"code":"HNL","name":"Daniel K. Inouye International (Honolulu)","city":"Honolulu","state":"HI"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-81.8547,41.4094]},"properties":{"code":"CLE","name":"Cleveland Hopkins International","city":"Cleveland","state":"OH"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-104.6732,39.8617]},"properties":{"code":"DEN","name":"Denver International","city":"Denver","state":"CO"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-74.1687,40.6925]},"properties":{"code":"EWR","name":"Newark Liberty International","city":"Newark","state":"NJ"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-95.3414,29.9844]},"properties":{"code":"IAH","name":"George Bush Intercontinental (Houston)","city":"Houston","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-81.3089,28.4294]},"properties":{"code":"MCO","name":"Orlando International","city":"Orlando","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.5332,27.9755]},"properties":{"code":"TPA","name":"Tampa International","city":"Tampa","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-117.6012,34.056]},"properties":{"code":"ONT","name":"Ontario International","city":"Ontario","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-115.1522,36.0801]},"properties":{"code":"LAS","name":"Harry Reid International (Las Vegas)","city":"Las Vegas","state":"NV"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-76.6683,39.1754]},"properties":{"code":"BWI","name":"Baltimore/Washington International Thurgood Marshall","city":"Baltimore","state":"MD"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-96.8518,32.8471]},"properties":{"code":"DAL","name":"Dallas Love Field","city":"Dallas","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-95.2789,29.6454]},"properties":{"code":"HOU","name":"William P. Hobby (Houston)","city":"Houston","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-87.7524,41.786]},"properties":{"code":"MDW","name":"Chicago Midway International","city":"Chicago","state":"IL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.2207,37.7213]},"properties":{"code":"OAK","name":"Oakland International","city":"Oakland","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.1527,26.0726]},"properties":{"code":"FLL","name":"Fort Lauderdale-Hollywood International","city":"Fort Lauderdale","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.7789,40.6398]},"properties":{"code":"JFK","name":"John F. Kennedy International (New York)","city":"New York","state":"NY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-75.1826,39.8744]},"properties":{"code":"ACY","name":"Atlantic City International","city":"Atlantic City","state":"NJ"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-147.8564,64.8151]},"properties":{"code":"FAI","name":"Fairbanks International Airport","city":"Fairbanks","state":"AK"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-83.7921,39.4279]},"properties":{"code":"ILN","name":"Wilmington Air Park","city":"Wilmington","state":"OH"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-85.736,38.1744]},"properties":{"code":"SDF","name":"Louisville Muhammad Ali International","city":"Louisville","state":"KY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-70.2804,41.6693]},"properties":{"code":"HYA","name":"Barnstable Municipal Airport","city":"Hyannis","state":"MA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-77.4558,38.9445]},"properties":{"code":"IAD","name":"Washington Dulles International","city":"Washington","state":"VA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-86.2944,39.7173]},"properties":{"code":"IND","name":"Indianapolis International","city":"Indianapolis","state":"IN"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-117.8682,47.6219]},"properties":{"code":"GEG","name":"Spokane International","city":"Spokane","state":"WA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.5975,45.5887]},"properties":{"code":"MFR","name":"Rogue Valley International-Medford","city":"Medford","state":"OR"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.2917,47.9013]},"properties":{"code":"PAE","name":"Paine Field (Everett)","city":"Everett","state":"WA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-78.7875,35.8776]},"properties":{"code":"RDU","name":"Raleigh-Durham International","city":"Raleigh","state":"NC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-90.3613,38.7477]},"properties":{"code":"STL","name":"St. Louis Lambert International","city":"St. Louis","state":"MO"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-84.2194,39.9024]},"properties":{"code":"DAY","name":"Dayton International","city":"Dayton","state":"OH"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-112.6738,33.3077]},"properties":{"code":"IWA","name":"Phoenix-Mesa Gateway Airport","city":"Mesa","state":"AZ"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-81.9911,26.9202]},"properties":{"code":"PGD","name":"Punta Gorda Airport","city":"Punta Gorda","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.6874,27.9102]},"properties":{"code":"PIE","name":"St. Pete–Clearwater International Airport","city":"Clearwater","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-111.6654,40.2165]},"properties":{"code":"PVU","name":"Provo Municipal Airport","city":"Provo","state":"UT"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-81.2433,28.7776]},"properties":{"code":"SFB","name":"Orlando Sanford International Airport","city":"Sanford","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-83.3538,35.8111]},"properties":{"code":"TYS","name":"McGhee Tyson Airport","city":"Knoxville","state":"TN"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-86.6782,30.4861]},"properties":{"code":"VPS","name":"Destin–Fort Walton Beach Airport","city":"Valparaiso","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-72.6832,41.939]},"properties":{"code":"BDL","name":"Bradley International Airport","city":"Windsor Locks","state":"CT"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-106.6092,31.8067]},"properties":{"code":"ELP","name":"El Paso International Airport","city":"El Paso","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-72.7756,41.2637]},"properties":{"code":"HVN","name":"Tweed-New Haven Regional Airport","city":"New Haven","state":"CT"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-75.4404,39.6787]},"properties":{"code":"ILG","name":"Wilmington Airport","city":"Wilmington","state":"DE"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-81.7552,27.9889]},"properties":{"code":"LAL","name":"Lakeland Linder International Airport","city":"Lakeland","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.6549,32.8986]},"properties":{"code":"CHS","name":"Charleston International Airport","city":"Charleston","state":"SC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-90.0701,29.9934]},"properties":{"code":"MSY","name":"Louis Armstrong New Orleans International Airport","city":"New Orleans","state":"LA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-76.2012,36.8946]},"properties":{"code":"ORF","name":"Norfolk International Airport","city":"Norfolk","state":"VA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.436,41.7249]},"properties":{"code":"PVD","name":"Rhode Island T. F. Green International Airport","city":"Warwick","state":"RI"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.5541,26.5362]},"properties":{"code":"RSW","name":"Southwest Florida International Airport","city":"Fort Myers","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.3956,27.5432]},"properties":{"code":"VRB","name":"Vero Beach Regional Airport","city":"Vero Beach","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-86.7703,36.1245]},"properties":{"code":"BNA","name":"Nashville International Airport","city":"Nashville","state":"TN"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-93.669,41.534]},"properties":{"code":"DSM","name":"Des Moines International Airport","city":"Des Moines","state":"IA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-83.1943,42.8808]},"properties":{"code":"FNT","name":"Bishop International Airport","city":"Flint","state":"MI"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-85.5228,42.8808]},"properties":{"code":"GRR","name":"Gerald R. Ford International Airport","city":"Grand Rapids","state":"MI"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-79.9373,32.8986]},"properties":{"code":"SAV","name":"Savannah/Hilton Head International Airport","city":"Savannah","state":"GA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-88.1296,44.2619]},"properties":{"code":"ATW","name":"Appleton International Airport","city":"Appleton","state":"WI"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.5541,35.8111]},"properties":{"code":"AVL","name":"Asheville Regional Airport","city":"Asheville","state":"NC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.5975,48.7928]},"properties":{"code":"BLI","name":"Bellingham International Airport","city":"Bellingham","state":"WA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-75.4404,40.6521]},"properties":{"code":"ABE","name":"Lehigh Valley International Airport","city":"Allentown","state":"PA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[144.797,13.484]},"properties":{"code":"GUM","name":"Antonio B. Won Pat International Airport","city":"Tamuning","state":"GU"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-89.9767,35.0424]},"properties":{"code":"MEM","name":"Memphis International Airport","city":"Memphis","state":"TN"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-116.2229,43.5644]},"properties":{"code":"BOI","name":"Boise Airport","city":"Boise","state":"ID"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.82575,40.7085]},"properties":{"code":"NYC","name":"New York City (LGA/JFK)","city":"New York","state":"NY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.2327,40.4914]},"properties":{"code":"PIT","name":"Pittsburgh International Airport","city":"Pittsburgh","state":"PA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-106.6092,35.0402]},"properties":{"code":"ABQ","name":"Albuquerque International Sunport","city":"Albuquerque","state":"NM"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.8017,42.7483]},"properties":{"code":"ALB","name":"Albany International Airport","city":"Albany","state":"NY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-97.6699,30.1945]},"properties":{"code":"AUS","name":"Austin-Bergstrom International Airport","city":"Austin","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-86.7535,33.5629]},"properties":{"code":"BHM","name":"Birmingham-Shuttlesworth International Airport","city":"Birmingham","state":"AL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.1533,42.9429]},"properties":{"code":"BTV","name":"Burlington International Airport","city":"Burlington","state":"VT"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-78.7322,42.9405]},"properties":{"code":"BUF","name":"Buffalo Niagara International Airport","city":"Buffalo","state":"NY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-118.3585,34.2006]},"properties":{"code":"BUR","name":"Hollywood Burbank Airport","city":"Burbank","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-111.153,45.7775]},"properties":{"code":"BZN","name":"Bozeman Yellowstone International Airport","city":"Bozeman","state":"MT"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-81.1195,33.9388]},"properties":{"code":"CAE","name":"Columbia Metropolitan Airport","city":"Columbia","state":"SC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-85.2035,35.0353]},"properties":{"code":"CHA","name":"Chattanooga Metropolitan Airport","city":"Chattanooga","state":"TN"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-91.7109,41.8847]},"properties":{"code":"CID","name":"Eastern Iowa Airport","city":"Cedar Rapids","state":"IA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.8919,39.998]},"properties":{"code":"CMH","name":"John Glenn Columbus International Airport","city":"Columbus","state":"OH"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-104.7008,38.8058]},"properties":{"code":"COS","name":"Colorado Springs Airport","city":"Colorado Springs","state":"CO"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-85.7954,30.3571]},"properties":{"code":"ECP","name":"Northwest Florida Beaches International Airport","city":"Panama City Beach","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-123.211,44.1246]},"properties":{"code":"EUG","name":"Eugene Airport","city":"Eugene","state":"OR"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-81.7596,24.5561]},"properties":{"code":"EYW","name":"Key West International Airport","city":"Key West","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-96.8158,46.9207]},"properties":{"code":"FAR","name":"Hector International Airport","city":"Fargo","state":"ND"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-119.718,36.7762]},"properties":{"code":"FAT","name":"Fresno Yosemite International Airport","city":"Fresno","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-96.7419,43.582]},"properties":{"code":"FSD","name":"Joe Foss Field","city":"Sioux Falls","state":"SD"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-79.9373,36.0978]},"properties":{"code":"GSO","name":"Piedmont Triad International Airport","city":"Greensboro","state":"NC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.2189,34.8957]},"properties":{"code":"GSP","name":"Greenville-Spartanburg International Airport","city":"Greer","state":"SC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.7076,41.067]},"properties":{"code":"HPN","name":"Westchester County Airport","city":"White Plains","state":"NY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-97.6544,26.2285]},"properties":{"code":"HRL","name":"Valley International Airport","city":"Harlingen","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-86.7751,34.6372]},"properties":{"code":"HSV","name":"Huntsville International Airport","city":"Huntsville","state":"AL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-97.4331,37.6499]},"properties":{"code":"ICT","name":"Wichita Dwight D. Eisenhower National Airport","city":"Wichita","state":"KS"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-77.9026,34.2706]},"properties":{"code":"ILM","name":"Wilmington International Airport","city":"Wilmington","state":"NC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-90.0812,32.3112]},"properties":{"code":"JAN","name":"Jackson-Medgar Wiley Evers International Airport","city":"Jackson","state":"MS"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-81.6874,30.4919]},"properties":{"code":"JAX","name":"Jacksonville International Airport","city":"Jacksonville","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-101.8206,33.6636]},"properties":{"code":"LBB","name":"Lubbock Preston Smith International Airport","city":"Lubbock","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-84.3503,38.0365]},"properties":{"code":"LEX","name":"Blue Grass Airport","city":"Lexington","state":"KY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-118.1516,33.8177]},"properties":{"code":"LGB","name":"Long Beach Airport","city":"Long Beach","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-92.4736,34.7294]},"properties":{"code":"LIT","name":"Bill and Hillary Clinton National Airport","city":"Little Rock","state":"AR"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-102.2019,31.9475]},"properties":{"code":"MAF","name":"Midland International Air and Space Port","city":"Midland","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-94.3069,39.2976]},"properties":{"code":"MCI","name":"Kansas City International Airport","city":"Kansas City","state":"MO"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-76.9264,40.1935]},"properties":{"code":"MDT","name":"Harrisburg International Airport","city":"Middletown","state":"PA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.289,42.9304]},"properties":{"code":"MHT","name":"Manchester-Boston Regional Airport","city":"Manchester","state":"NH"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-87.8966,43.1399]},"properties":{"code":"MKE","name":"Milwaukee Mitchell International Airport","city":"Milwaukee","state":"WI"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-89.3375,43.1399]},"properties":{"code":"MSN","name":"Dane County Regional Airport","city":"Madison","state":"WI"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-78.8805,33.6798]},"properties":{"code":"MYR","name":"Myrtle Beach International Airport","city":"Myrtle Beach","state":"SC"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-95.8942,41.3032]},"properties":{"code":"OMA","name":"Eppley Airfield","city":"Omaha","state":"NE"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.0956,26.6832]},"properties":{"code":"PBI","name":"Palm Beach International Airport","city":"West Palm Beach","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-87.2199,30.4734]},"properties":{"code":"PNS","name":"Pensacola International Airport","city":"Pensacola","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-116.5063,33.8297]},"properties":{"code":"PSP","name":"Palm Springs International Airport","city":"Palm Springs","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-70.3093,41.6683]},"properties":{"code":"PWM","name":"Portland International Jetport","city":"Portland","state":"ME"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-121.3516,44.2535]},"properties":{"code":"RDM","name":"Roberts Field","city":"Redmond","state":"OR"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-77.6724,37.5052]},"properties":{"code":"RIC","name":"Richmond International Airport","city":"Richmond","state":"VA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-119.7681,39.4991]},"properties":{"code":"RNO","name":"Reno-Tahoe International Airport","city":"Reno","state":"NV"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-77.3197,43.1189]},"properties":{"code":"ROC","name":"Greater Rochester International Airport","city":"Rochester","state":"NY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-117.1897,32.7336]},"properties":{"code":"SAN","name":"San Diego International Airport","city":"San Diego","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-98.4698,29.5337]},"properties":{"code":"SAT","name":"San Antonio International Airport","city":"San Antonio","state":"TX"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-119.8938,34.4262]},"properties":{"code":"SBA","name":"Santa Barbara Municipal Airport","city":"Santa Barbara","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-93.6607,37.1859]},"properties":{"code":"SGF","name":"Springfield-Branson National Airport","city":"Springfield","state":"MO"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-121.9299,37.3619]},"properties":{"code":"SJC","name":"Norman Y. Mineta San Jose International Airport","city":"San Jose","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-121.5908,38.6954]},"properties":{"code":"SMF","name":"Sacramento International Airport","city":"Sacramento","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-117.8682,33.6757]},"properties":{"code":"SNA","name":"John Wayne Airport","city":"Santa Ana","state":"CA"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.2189,27.3954]},"properties":{"code":"SRQ","name":"Sarasota-Bradenton International Airport","city":"Sarasota","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-76.1063,43.1112]},"properties":{"code":"SYR","name":"Syracuse Hancock International Airport","city":"Syracuse","state":"NY"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-95.8881,36.1984]},"properties":{"code":"TUL","name":"Tulsa International Airport","city":"Tulsa","state":"OK"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-110.941,32.1161]},"properties":{"code":"TUS","name":"Tucson International Airport","city":"Tucson","state":"AZ"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-94.3633,35.3931]},"properties":{"code":"XNA","name":"Northwest Arkansas National Airport","city":"Bentonville","state":"AR"}}","state":"PA"}}
+  ]
+}
+    </script>
+
+    <script>
+        let linkData = [];
+        let domicileData = {};
+        let airportInfo = {};
+        let stateSet = new Set();
+        const geojson = JSON.parse(document.getElementById('mapData').textContent);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            geojson.features.forEach(f => {
+                const p = f.properties;
+                airportInfo[p.code] = { name: p.name, city: p.city || '', state: p.state || '' };
+                if (p.state) stateSet.add(p.state);
+            });
+
+            const rawText = document.getElementById('rawData').textContent.trim();
+            parseRawData(rawText);
+            renderAccordion();
+            buildDomicileData();
+            initMap();
+            buildFilters();
+            applyFilters();
+
+            document.getElementById('clearSearch').addEventListener('click', () => {
+                document.getElementById('searchInput').value = '';
+                searchLinks();
+            });
+
+            // Individual group All / None
+            document.querySelectorAll('.select-all-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const group = this.dataset.group;
+                    const action = this.dataset.action;
+                    const selector = group === 'category' ? '#categoryFilters input' :
+                                     group === 'airline' ? '#airlineFilters input' :
+                                     group === 'domicile' ? '#domicileFilters input' :
+                                     '#stateFilters input';
+                    document.querySelectorAll(selector).forEach(cb => cb.checked = (action === 'select'));
+                    applyFilters();
+                });
+            });
+
+            // Global All / None
+            document.getElementById('globalSelectAll').addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = true);
+                applyFilters();
+            });
+
+            document.getElementById('globalDeselectAll').addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
+                applyFilters();
+            });
+        });
+
+        function parseRawData(text) {
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+            let current = null;
+            linkData = [];
+            lines.forEach(line => {
+                if (line.startsWith('# ')) {
+                    const cat = line.slice(2).trim();
+                    if (cat) current = { category: cat, links: [] };
+                    linkData.push(current);
+                } else if (line.includes('|') && current) {
+                    const parts = line.split('|').map(s => s.trim());
+                    const name = parts[0];
+                    const url = parts[1] || '#';
+                    const domiciles = parts[2] ? parts[2].split(',').map(c => c.trim()).filter(c => c) : [];
+                    current.links.push({ name, url, domiciles });
+                }
+            });
+        }
+
+        function buildDomicileData() {
+            linkData.forEach(cat => {
+                const category = cat.category;
+                cat.links.forEach(link => {
+                    link.domiciles.forEach(code => {
+                        if (!domicileData[code]) domicileData[code] = { airlines: [], categories: [], urls: {} };
+                        domicileData[code].airlines.push(link.name);
+                        domicileData[code].urls[link.name] = link.url;
+                        if (!domicileData[code].categories.includes(category)) domicileData[code].categories.push(category);
+                    });
+                });
+            });
+            Object.keys(domicileData).forEach(code => domicileData[code].airlines.sort());
+        }
+
+        function renderAccordion() {
+            const container = document.getElementById('accordionLinks');
+            container.innerHTML = '';
+            linkData.forEach((cat, index) => {
+                const collapsed = index > 0 ? 'collapsed' : '';
+                const show = index === 0 ? 'show' : '';
+                const item = document.createElement('div');
+                item.className = 'accordion-item';
+                item.innerHTML = `
+                    <h2 class="accordion-header">
+                        <button class="accordion-button ${collapsed}" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse-${cat.category.replace(/[^a-z0-9]/gi,'')}">
+                            ${cat.category} <small class="text-muted">(${cat.links.length})</small>
+                        </button>
+                    </h2>
+                    <div id="collapse-${cat.category.replace(/[^a-z0-9]/gi,'')}" class="accordion-collapse collapse ${show}" data-bs-parent="#accordionLinks">
+                        <div class="accordion-body d-flex flex-wrap justify-content-center"></div>
+                    </div>
+                `;
+                container.appendChild(item);
+                const body = item.querySelector('.accordion-body');
+                cat.links.forEach(l => {
+                    const a = document.createElement('a');
+                    a.href = l.url;
+                    if (l.url !== '#') a.target = '_blank';
+                    a.className = 'btn btn-custom';
+                    a.textContent = l.name;
+                    body.appendChild(a);
+                });
+            });
+        }
+
+        let map;
+        let clusterGroup = L.markerClusterGroup();
+
+        function initMap() {
+            map = L.map('map').setView([39.8, -98.5], 4);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+            clusterGroup.addTo(map);
+        }
+
+        // Airplane SVG (Bootstrap Icons - open source)
+        const airplaneSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%color"><path d="M6.428 1.151C6.708.591 7.213 0 8 0s1.292.592 1.572 1.151C9.861 1.73 10 2.431 10 3v3.691l5.17 2.585a1.5 1.5 0 0 1 .83 1.342V12a.5.5 0 0 1-.582.493l-5.507-.918-.375 2.253 1.318 1.318A.5.5 0 0 1 10.5 16h-5a.5.5 0 0 1-.354-.854l1.319-1.318-.376-2.253-5.507.918A.5.5 0 0 1 0 12v-1.382a1.5 1.5 0 0 1 .83-1.342L6 6.691V3c0-.568.14-1.271.428-1.849m.894.448C7.111 2.02 7 2.569 7 3v4a.5.5 0 0 1-.276.447l-5.448 2.724a.5.5 0 0 0-.276.447v.792l5.418-.903a.5.5 0 0 1 .575.41l.5 3a.5.5 0 0 1-.14.437L6.708 15h2.586l-.647-.646a.5.5 0 0 1-.14-.436l.5-3a.5.5 0 0 1 .576-.411L15 11.41v-.792a.5.5 0 0 0-.276-.447L9.276 7.447A.5.5 0 0 1 9 7V3c0-.432-.11-.979-.322-1.401C8.458 1.159 8.213 1 8 1s-.458.158-.678.599"/></svg>`;
+
+        const categoryColors = {
+            "Legacy Carriers": "#0066cc",
+            "Major / National / Low Cost Carriers (LCC)": "#cc0000",
+            "Cargo Airlines": "#ff8800",
+            "Regional Airlines": "#9900cc"
+        };
+
+        function getAirplaneIcon(primaryCategory) {
+            const color = categoryColors[primaryCategory] || "#808080";
+            const svg = airplaneSvg.replace("%color", color.replace("#","%23"));
+            const iconUrl = 'data:image/svg+xml,' + svg;
+            return L.icon({
+                iconUrl: iconUrl,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -16]
+            });
+        }
+
+        function buildMarkers() {
+            clusterGroup.clearLayers();
+            const selectedCategories = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(cb => cb.value);
+            const selectedAirlines = Array.from(document.querySelectorAll('#airlineFilters input:checked')).map(cb => cb.value);
+            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input:checked')).map(cb => cb.value);
+            const selectedStates = Array.from(document.querySelectorAll('#stateFilters input:checked')).map(cb => cb.value);
+
+            geojson.features.forEach(feature => {
+                const code = feature.properties.code;
+                if (!domicileData[code]) return;
+
+                const dom = domicileData[code];
+                const airportState = airportInfo[code]?.state || '';
+                const matchesCategory = selectedCategories.length === 0 || dom.categories.some(c => selectedCategories.includes(c));
+                const matchesAirline = selectedAirlines.length === 0 || dom.airlines.some(a => selectedAirlines.includes(a));
+                const matchesDomicile = selectedDomiciles.length === 0 || selectedDomiciles.includes(code);
+                const matchesState = selectedStates.length === 0 || selectedStates.includes(airportState);
+
+                if (matchesCategory && matchesAirline && matchesDomicile && matchesState) {
+                    const primaryCategory = dom.categories[0];
+                    const marker = L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], {
+                        icon: getAirplaneIcon(primaryCategory)
+                    });
+
+                    let popupContent = `<b>${code} - ${feature.properties.name}</b><br><br>`;
+                    const grouped = {};
+                    dom.categories.forEach(cat => grouped[cat] = []);
+                    dom.airlines.forEach(airline => {
+                        for (const catObj of linkData) {
+                            if (catObj.links.some(l => l.name === airline)) {
+                                grouped[catObj.category].push(`<a href="${dom.urls[airline]}" target="_blank">${airline}</a>`);
+                                break;
+                            }
+                        }
+                    });
+                    popupContent += Object.keys(grouped).sort().map(cat => `<strong>${cat}:</strong><br>${grouped[cat].join('<br>') || 'None'}<br><br>`).join('');
+                    marker.bindPopup(popupContent);
+                    clusterGroup.addLayer(marker);
+                }
+            });
+        }
+
+        function buildFilters() {
+            const categories = linkData.map(c => c.category);
+            const allAirlines = linkData.flatMap(c => c.links.map(l => ({name: l.name, url: l.url, category: c.category})));
+            const allDomiciles = Object.keys(domicileData).sort();
+
+            const catDiv = document.getElementById('categoryFilters');
+            categories.forEach(cat => {
+                catDiv.innerHTML += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${cat}" id="cat-${cat.replace(/[^a-z0-9]/gi,'')}" checked><label class="form-check-label" for="cat-${cat.replace(/[^a-z0-9]/gi,'')}">${cat}</label></div>`;
+            });
+
+            const airlineDiv = document.getElementById('airlineFilters');
+            linkData.forEach(cat => {
+                airlineDiv.innerHTML += `<div class="category-divider">${cat.category}</div>`;
+                cat.links.forEach(l => {
+                    const safeId = l.name.replace(/[^a-z0-9]/gi,'');
+                    airlineDiv.innerHTML += `<div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="${l.name}" id="air-${safeId}" checked>
+                        <label class="form-check-label" for="air-${safeId}">
+                            <a href="${l.url}" target="_blank">${l.name}</a>
+                        </label>
+                    </div>`;
+                });
+            });
+
+            const domDiv = document.getElementById('domicileFilters');
+            // Build stateToDomiciles
+            let stateToDomiciles = {};
+            Object.keys(domicileData).forEach(code => {
+                const state = airportInfo[code]?.state || 'Other';
+                if (!stateToDomiciles[state]) stateToDomiciles[state] = [];
+                stateToDomiciles[state].push(code);
+            });
+
+            // Sort states
+            const sortedStates = Object.keys(stateToDomiciles).sort();
+
+            sortedStates.forEach(state => {
+                domDiv.innerHTML += `<div class="category-divider">${state}</div>`;
+                stateToDomiciles[state].sort().forEach(code => {
+                    const info = airportInfo[code] || { name: code, city: '', state: '' };
+                    const tooltip = `${info.name} (${info.city ? info.city + ', ' : ''}${info.state})`;
+                    domDiv.innerHTML += `<div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="${code}" id="dom-${code}" checked>
+                        <label class="form-check-label domicile-label" for="dom-${code}" title="${tooltip}">${code}</label>
+                    </div>`;
+                });
+            });
+
+            const stateDiv = document.getElementById('stateFilters');
+            Array.from(stateSet).sort().forEach(state => {
+                stateDiv.innerHTML += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${state}" id="state-${state}" checked><label class="form-check-label state-label" for="state-${state}">${state}</label></div>`;
+            });
+
+            document.querySelectorAll('.form-check-input').forEach(cb => cb.addEventListener('change', applyFilters));
+        }
+
+        function applyFilters() {
+            buildMarkers();
+        }
+
+        function searchLinks() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.btn-custom').forEach(btn => {
+                btn.style.display = btn.textContent.toLowerCase().includes(query) ? 'inline-block' : 'none';
+            });
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                const visible = item.querySelectorAll('.btn-custom[style*="inline-block"]').length > 0;
+                item.style.display = visible ? 'block' : 'none';
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', searchLinks);
+    </script>
+</body>
+</html>
