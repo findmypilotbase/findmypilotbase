@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find My Pilot Base - Hiring Links</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .search-bar { max-width: 500px; margin: 20px auto; }
+        .category-section { margin-bottom: 40px; }
+        .category-title { color: #2c3e50; border-bottom: 2px solid #dee2e6; padding-bottom: 10px; margin-bottom: 20px; }
+        .airline-item { border: none; background-color: transparent; padding: 10px 0; border-bottom: 1px solid #dee2e6; }
+        .airline-item:last-child { border-bottom: none; }
+        .airline-name { font-size: 1.1rem; font-weight: 600; color: #0066cc; text-decoration: none; }
+        .airline-name:hover { text-decoration: underline; }
+        .domiciles { font-size: 0.85rem; color: #6c757d; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+        <h1 class="text-center mb-4">Airline Hiring Links</h1>
+        <!-- Search Bar with Clear Button -->
+        <div class="search-bar mt-4">
+            <div class="input-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search airlines or domiciles..." aria-label="Search links">
+                <button class="btn btn-outline-secondary" type="button" id="clearSearch">Clear</button>
+            </div>
+        </div>
+        <!-- Hiring Links Sections -->
+        <div id="linksContainer" class="mt-5"></div>
+    </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="data.js"></script> <!-- Shared data file -->
+    <script>
+        let linkData = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const rawText = rawAirlineData;
+            parseRawData(rawText);
+            renderSections();
+            document.getElementById('clearSearch').addEventListener('click', () => {
+                document.getElementById('searchInput').value = '';
+                searchLinks();
+            });
+            document.getElementById('searchInput').addEventListener('input', searchLinks);
+        });
+
+        function parseRawData(text) {
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+            let current = null;
+            linkData = [];
+            lines.forEach(line => {
+                if (line.startsWith('# ')) {
+                    const cat = line.slice(2).trim();
+                    if (cat) current = { category: cat, links: [] };
+                    linkData.push(current);
+                } else if (line.includes('|') && current) {
+                    const parts = line.split('|').map(s => s.trim());
+                    const name = parts[0];
+                    const url = parts[1] || '#';
+                    const domiciles = parts[2] ? parts[2].split(',').map(c => c.trim()).filter(c => c) : [];
+                    current.links.push({ name, url, domiciles });
+                }
+            });
+        }
+
+        function renderSections() {
+            const container = document.getElementById('linksContainer');
+            container.innerHTML = '';
+            linkData.forEach(cat => {
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                section.innerHTML = `<h2 class="category-title">${cat.category}</h2>`;
+                const list = document.createElement('div');
+                cat.links.forEach(l => {
+                    const item = document.createElement('div');
+                    item.className = 'airline-item';
+                    item.innerHTML = `
+                        <a href="${l.url}" target="_blank" class="airline-name">${l.name}</a>
+                        <div class="domiciles">${l.domiciles.sort().join(', ')}</div>
+                    `;
+                    list.appendChild(item);
+                });
+                section.appendChild(list);
+                container.appendChild(section);
+            });
+        }
+
+        function searchLinks() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.airline-item').forEach(item => {
+                const name = item.querySelector('.airline-name').textContent.toLowerCase();
+                const domiciles = item.querySelector('.domiciles').textContent.toLowerCase();
+                item.style.display = (name.includes(query) || domiciles.includes(query)) ? '' : 'none';
+            });
+            document.querySelectorAll('.category-section').forEach(section => {
+                const visibleItems = section.querySelectorAll('.airline-item:not([style*="none"])').length;
+                section.style.display = visibleItems > 0 ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
