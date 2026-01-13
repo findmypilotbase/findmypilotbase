@@ -1,1 +1,308 @@
-x
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find My Pilot Base - Map</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet MarkerCluster -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .accordion-button { font-weight: 600; color: #2c3e50; }
+        #map { height: 70vh; margin-top: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .filter-section {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+        .filter-group { margin-bottom: 10px; }
+        .filter-group h5 { margin-bottom: 5px; font-size: 1rem; }
+        .select-all-btn { font-size: 0.75rem; margin-left: 5px; }
+        .domicile-label { cursor: help; text-decoration: underline dotted; }
+        .state-label { cursor: help; }
+        .category-divider {
+            margin: 8px 0 5px;
+            font-weight: bold;
+            color: #495057;
+            border-top: 1px solid #dee2e6;
+            padding-top: 5px;
+        }
+        .global-select { font-size: 1.25rem; margin-left: 10px; }
+        .filter-header {
+            margin-bottom: 10px;
+        }
+        #airlineFilters {
+            overflow-y: auto;
+            max-height: 250px;
+        }
+        #domicileFilters {
+            overflow-y: auto;
+            max-height: 250px;
+        }
+        #stateFilters {
+            overflow-y: auto;
+            max-height: 250px;
+        }
+        @media (max-width: 576px) {
+            .filter-section { padding: 5px; }
+            .filter-group h5 { font-size: 0.9rem; }
+            #map { height: 60vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+        <h1 class="text-center mb-4">Find My Pilot Base</h1>
+        <p class="text-center mb-3">Use this interactive map to explore pilot domiciles across various airlines. Filter by categories, airlines, domiciles, or states to customize your view and see detailed information about bases, including associated carriers and hiring links.</p>
+        <p class="text-center mb-4">Scroll down below the map to find links directly to each airline's hiring page. You can also click the link within the filters dropdown.</p>
+        <p class="text-center mb-4">To provide feedback, please email us at <a href="mailto:findmypilotbase@gmail.com">FindMyPilotBase@gmail.com</a>.</p>
+        <!-- Filter Controls Section - Collapsible -->
+        <div class="accordion filter-section" id="filterAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                        Filter Map Markers
+                    </button>
+                </h2>
+                <div id="filterCollapse" class="accordion-collapse collapse" aria-labelledby="filterHeader">
+                    <div class="accordion-body p-2">
+                        <div class="global-select mb-2 text-center">
+                            <a href="#" id="globalSelectAll">All</a> | <a href="#" id="globalDeselectAll">None</a>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 filter-group">
+                                <h5>Categories <a href="#" class="select-all-btn" data-group="category" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="category" data-action="deselect">None</a></h5>
+                                <div id="categoryFilters"></div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 filter-group">
+                                <h5>Airlines <a href="#" class="select-all-btn" data-group="airline" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="airline" data-action="deselect">None</a></h5>
+                                <div id="airlineFilters"></div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 filter-group">
+                                <h5>Domiciles <a href="#" class="select-all-btn" data-group="domicile" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="domicile" data-action="deselect">None</a></h5>
+                                <div id="domicileFilters"></div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 filter-group">
+                                <h5>States <a href="#" class="select-all-btn" data-group="state" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="state" data-action="deselect">None</a></h5>
+                                <div id="stateFilters"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Interactive Map Section -->
+        <div id="map"></div>
+    </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="data.js"></script> <!-- Shared data file -->
+    <script src="airport-data.js"></script> <!-- Shared airport data file -->
+    <script>
+        let linkData = [];
+        let domicileData = {};
+        let airportInfo = {};
+        let stateSet = new Set();
+        const geojson = airportData;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            geojson.features.forEach(f => {
+                const p = f.properties;
+                airportInfo[p.code] = { name: p.name, city: p.city || '', state: p.state || '' };
+                if (p.state) stateSet.add(p.state);
+            });
+            const rawText = rawAirlineData; // Reference shared variable
+            parseRawData(rawText);
+            buildDomicileData();
+            initMap();
+            buildFilters();
+            applyFilters();
+            // Individual group All / None
+            document.querySelectorAll('.select-all-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const group = this.dataset.group;
+                    const action = this.dataset.action;
+                    const selector = group === 'category' ? '#categoryFilters input' :
+                                     group === 'airline' ? '#airlineFilters input' :
+                                     group === 'domicile' ? '#domicileFilters input' :
+                                     '#stateFilters input';
+                    document.querySelectorAll(selector).forEach(cb => cb.checked = (action === 'select'));
+                    applyFilters();
+                });
+            });
+            // Global All / None
+            document.getElementById('globalSelectAll').addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = true);
+                applyFilters();
+            });
+            document.getElementById('globalDeselectAll').addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
+                applyFilters();
+            });
+        });
+        function parseRawData(text) {
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+            let current = null;
+            linkData = [];
+            lines.forEach(line => {
+                if (line.startsWith('# ')) {
+                    const cat = line.slice(2).trim();
+                    if (cat) current = { category: cat, links: [] };
+                    linkData.push(current);
+                } else if (line.includes('|') && current) {
+                    const parts = line.split('|').map(s => s.trim());
+                    const name = parts[0];
+                    const url = parts[1] || '#';
+                    const domiciles = parts[2] ? parts[2].split(',').map(c => c.trim()).filter(c => c) : [];
+                    current.links.push({ name, url, domiciles });
+                }
+            });
+        }
+        function buildDomicileData() {
+            linkData.forEach(cat => {
+                const category = cat.category;
+                cat.links.forEach(link => {
+                    link.domiciles.forEach(code => {
+                        if (!domicileData[code]) domicileData[code] = { airlines: [], categories: [], urls: {} };
+                        domicileData[code].airlines.push(link.name);
+                        domicileData[code].urls[link.name] = link.url;
+                        if (!domicileData[code].categories.includes(category)) domicileData[code].categories.push(category);
+                    });
+                });
+            });
+            Object.keys(domicileData).forEach(code => domicileData[code].airlines.sort());
+        }
+        let map;
+        let clusterGroup = L.markerClusterGroup();
+        function initMap() {
+            map = L.map('map').setView([39.8, -98.5], 4);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+            clusterGroup.addTo(map);
+        }
+        // Airplane SVG (Bootstrap Icons - open source)
+        const airplaneSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%color"><path d="M6.428 1.151C6.708.591 7.213 0 8 0s1.292.592 1.572 1.151C9.861 1.73 10 2.431 10 3v3.691l5.17 2.585a1.5 1.5 0 0 1 .83 1.342V12a.5.5 0 0 1-.582.493l-5.507-.918-.375 2.253 1.318 1.318A.5.5 0 0 1 10.5 16h-5a.5.5 0 0 1-.354-.854l1.319-1.318-.376-2.253-5.507.918A.5.5 0 0 1 0 12v-1.382a1.5 1.5 0 0 1 .83-1.342L6 6.691V3c0-.568.14-1.271.428-1.849m.894.448C7.111 2.02 7 2.569 7 3v4a.5.5 0 0 1-.276.447l-5.448 2.724a.5.5 0 0 0-.276.447v.792l5.418-.903a.5.5 0 0 1 .575.41l.5 3a.5.5 0 0 1-.14.437L6.708 15h2.586l-.647-.646a.5.5 0 0 1-.14-.436l.5-3a.5.5 0 0 1 .576-.411L15 11.41v-.792a.5.5 0 0 0-.276-.447L9.276 7.447A.5.5 0 0 1 9 7V3c0-.432-.11-.979-.322-1.401C8.458 1.159 8.213 1 8 1s-.458.158-.678.599"/></svg>`;
+        const categoryColors = {
+            "Legacy Carriers": "#0066cc",
+            "Major / National / Low Cost Carriers (LCC)": "#cc0000",
+            "Cargo Airlines": "#ff8800",
+            "Regional Airlines": "#9900cc"
+        };
+        function getAirplaneIcon(primaryCategory) {
+            const color = categoryColors[primaryCategory] || "#808080";
+            const svg = airplaneSvg.replace("%color", color.replace("#","%23"));
+            const iconUrl = 'data:image/svg+xml,' + svg;
+            return L.icon({
+                iconUrl: iconUrl,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -16]
+            });
+        }
+        function buildMarkers() {
+            clusterGroup.clearLayers();
+            const selectedCategories = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(cb => cb.value);
+            const selectedAirlines = Array.from(document.querySelectorAll('#airlineFilters input:checked')).map(cb => cb.value);
+            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input:checked')).map(cb => cb.value);
+            const selectedStates = Array.from(document.querySelectorAll('#stateFilters input:checked')).map(cb => cb.value);
+            geojson.features.forEach(feature => {
+                const code = feature.properties.code;
+                if (!domicileData[code]) return;
+                const dom = domicileData[code];
+                const airportState = airportInfo[code]?.state || '';
+                const matchesCategory = selectedCategories.length === 0 || dom.categories.some(c => selectedCategories.includes(c));
+                const matchesAirline = selectedAirlines.length === 0 || dom.airlines.some(a => selectedAirlines.includes(a));
+                const matchesDomicile = selectedDomiciles.length === 0 || selectedDomiciles.includes(code);
+                const matchesState = selectedStates.length === 0 || selectedStates.includes(airportState);
+                if (matchesCategory && matchesAirline && matchesDomicile && matchesState) {
+                    const primaryCategory = dom.categories[0];
+                    const marker = L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], {
+                        icon: getAirplaneIcon(primaryCategory)
+                    });
+                    let popupContent = `<b>${code} - ${feature.properties.name}</b><br><br>`;
+                    const grouped = {};
+                    dom.categories.forEach(cat => grouped[cat] = []);
+                    dom.airlines.forEach(airline => {
+                        for (const catObj of linkData) {
+                            if (catObj.links.some(l => l.name === airline)) {
+                                grouped[catObj.category].push(`<a href="${dom.urls[airline]}" target="_blank">${airline}</a>`);
+                                break;
+                            }
+                        }
+                    });
+                    popupContent += Object.keys(grouped).sort().map(cat => `<strong>${cat}:</strong><br>${grouped[cat].join('<br>') || 'None'}<br><br>`).join('');
+                    marker.bindPopup(popupContent);
+                    clusterGroup.addLayer(marker);
+                }
+            });
+        }
+        function buildFilters() {
+            const categories = linkData.map(c => c.category);
+            const allAirlines = linkData.flatMap(c => c.links.map(l => ({name: l.name, url: l.url, category: c.category})));
+            const allDomiciles = Object.keys(domicileData).sort();
+            const catDiv = document.getElementById('categoryFilters');
+            categories.forEach(cat => {
+                catDiv.innerHTML += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${cat}" id="cat-${cat.replace(/[^a-z0-9]/gi,'')}" checked><label class="form-check-label" for="cat-${cat.replace(/[^a-z0-9]/gi,'')}">${cat}</label></div>`;
+            });
+            const airlineDiv = document.getElementById('airlineFilters');
+            linkData.forEach(cat => {
+                airlineDiv.innerHTML += `<div class="category-divider">${cat.category}</div>`;
+                cat.links.forEach(l => {
+                    const safeId = l.name.replace(/[^a-z0-9]/gi,'');
+                    airlineDiv.innerHTML += `<div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="${l.name}" id="air-${safeId}" checked>
+                        <label class="form-check-label" for="air-${safeId}">
+                            <a href="${l.url}" target="_blank">${l.name}</a>
+                        </label>
+                    </div>`;
+                });
+            });
+            const domDiv = document.getElementById('domicileFilters');
+            // Build stateToDomiciles
+            let stateToDomiciles = {};
+            Object.keys(domicileData).forEach(code => {
+                const state = airportInfo[code]?.state || 'Other';
+                if (!stateToDomiciles[state]) stateToDomiciles[state] = [];
+                stateToDomiciles[state].push(code);
+            });
+            // Sort states
+            const sortedStates = Object.keys(stateToDomiciles).sort();
+            sortedStates.forEach(state => {
+                domDiv.innerHTML += `<div class="category-divider">${state}</div>`;
+                stateToDomiciles[state].sort().forEach(code => {
+                    const info = airportInfo[code] || { name: code, city: '', state: '' };
+                    const tooltip = `${info.name} (${info.city ? info.city + ', ' : ''}${info.state})`;
+                    domDiv.innerHTML += `<div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="${code}" id="dom-${code}" checked>
+                        <label class="form-check-label domicile-label" for="dom-${code}" title="${tooltip}">${code}</label>
+                    </div>`;
+                });
+            });
+            const stateDiv = document.getElementById('stateFilters');
+            Array.from(stateSet).sort().forEach(state => {
+                stateDiv.innerHTML += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${state}" id="state-${state}" checked><label class="form-check-label state-label" for="state-${state}">${state}</label></div>`;
+            });
+            document.querySelectorAll('.form-check-input').forEach(cb => cb.addEventListener('change', applyFilters));
+        }
+        function applyFilters() {
+            buildMarkers();
+        }
+    </script>
+</body>
+</html>
