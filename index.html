@@ -54,6 +54,25 @@
             max-height: 250px;
         }
         #exportBtn { margin-top: 20px; }
+        .airport-link {
+            color: inherit;
+            font-weight: normal;
+            text-decoration: underline;
+        }
+        .airport-link:hover {
+            color: #0056b3;
+        }
+        .state-group {
+            padding-left: 20px;
+        }
+        .state-block:not(:first-child) {
+            border-top: 1px solid #dee2e6;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .state-name {
+            font-weight: bold;
+        }
         @media (max-width: 576px) {
             .filter-section { padding: 5px; }
             .filter-group h5 { font-size: 0.9rem; }
@@ -81,21 +100,17 @@
                             <a href="#" id="globalSelectAll">All</a> | <a href="#" id="globalDeselectAll">None</a>
                         </div>
                         <div class="row">
-                            <div class="col-lg-3 col-md-6 filter-group">
+                            <div class="col-lg-4 col-md-6 filter-group">
                                 <h5>Categories <a href="#" class="select-all-btn" data-group="category" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="category" data-action="deselect">None</a></h5>
                                 <div id="categoryFilters"></div>
                             </div>
-                            <div class="col-lg-3 col-md-6 filter-group">
+                            <div class="col-lg-4 col-md-6 filter-group">
                                 <h5>Airlines <a href="#" class="select-all-btn" data-group="airline" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="airline" data-action="deselect">None</a></h5>
                                 <div id="airlineFilters"></div>
                             </div>
-                            <div class="col-lg-3 col-md-6 filter-group">
+                            <div class="col-lg-4 col-md-6 filter-group">
                                 <h5>Domiciles <a href="#" class="select-all-btn" data-group="domicile" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="domicile" data-action="deselect">None</a></h5>
                                 <div id="domicileFilters"></div>
-                            </div>
-                            <div class="col-lg-3 col-md-6 filter-group">
-                                <h5>States <a href="#" class="select-all-btn" data-group="state" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="state" data-action="deselect">None</a></h5>
-                                <div id="stateFilters"></div>
                             </div>
                         </div>
                     </div>
@@ -140,9 +155,12 @@
                     const action = this.dataset.action;
                     const selector = group === 'category' ? '#categoryFilters input' :
                                      group === 'airline' ? '#airlineFilters input' :
-                                     group === 'domicile' ? '#domicileFilters input' :
+                                     group === 'domicile' ? '#domicileFilters input.form-check-input:not(.state-control)' :
                                      '#stateFilters input';
                     document.querySelectorAll(selector).forEach(cb => cb.checked = (action === 'select'));
+                    if (group === 'domicile') {
+                        updateStateCheckboxes();
+                    }
                     applyFilters();
                 });
             });
@@ -222,8 +240,7 @@
             clusterGroup.clearLayers();
             const selectedCategories = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(cb => cb.value);
             const selectedAirlines = Array.from(document.querySelectorAll('#airlineFilters input:checked')).map(cb => cb.value);
-            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input:checked')).map(cb => cb.value);
-            const selectedStates = Array.from(document.querySelectorAll('#stateFilters input:checked')).map(cb => cb.value);
+            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input.form-check-input:not(.state-control):checked')).map(cb => cb.value);
             geojson.features.forEach(feature => {
                 const code = feature.properties.code;
                 if (!domicileData[code]) return;
@@ -232,13 +249,12 @@
                 const matchesCategory = selectedCategories.length === 0 || dom.categories.some(c => selectedCategories.includes(c));
                 const matchesAirline = selectedAirlines.length === 0 || dom.airlines.some(a => selectedAirlines.includes(a));
                 const matchesDomicile = selectedDomiciles.length === 0 || selectedDomiciles.includes(code);
-                const matchesState = selectedStates.length === 0 || selectedStates.includes(airportState);
-                if (matchesCategory && matchesAirline && matchesDomicile && matchesState) {
+                if (matchesCategory && matchesAirline && matchesDomicile) {
                     const primaryCategory = dom.categories[0];
                     const marker = L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], {
                         icon: getAirplaneIcon(primaryCategory)
                     });
-                    let popupContent = `<b>${code} - ${feature.properties.name}</b><br><br>`;
+                    let popupContent = `<b><a class="airport-link" href="https://www.flightsfrom.com/explorer/${code}?mapview" target="_blank">${code}</a> - ${feature.properties.name}</b><br><br>`;
                     const grouped = {};
                     dom.categories.forEach(cat => grouped[cat] = []);
                     dom.airlines.forEach(airline => {
@@ -265,10 +281,10 @@
             });
             const airlineDiv = document.getElementById('airlineFilters');
             linkData.forEach(cat => {
-                airlineDiv.innerHTML += `<div class="category-divider">${cat.category}</div>`;
+                airlineDiv.innerHTML += `<div class="category-divider" data-category="${cat.category}">${cat.category}</div>`;
                 cat.links.forEach(l => {
                     const safeId = l.name.replace(/[^a-z0-9]/gi,'');
-                    airlineDiv.innerHTML += `<div class="form-check">
+                    airlineDiv.innerHTML += `<div class="form-check" data-category="${cat.category}">
                         <input class="form-check-input" type="checkbox" value="${l.name}" id="air-${safeId}" checked>
                         <label class="form-check-label" for="air-${safeId}">
                             <a href="${l.url}" target="_blank">${l.name}</a>
@@ -286,43 +302,68 @@
             });
             // Sort states
             const sortedStates = Object.keys(stateToDomiciles).sort();
-            sortedStates.forEach(state => {
-                domDiv.innerHTML += `<div class="category-divider">${state}</div>`;
+            sortedStates.forEach((state, index) => {
+                const safeStateId = state.replace(/[^a-z0-9]/gi, '');
+                const stateBlockClass = index > 0 ? 'state-block' : 'state-block first';
+                domDiv.innerHTML += `<div class="${stateBlockClass}">`;
+                domDiv.innerHTML += `<div class="form-check">
+                    <input class="form-check-input state-control" type="checkbox" id="state-${safeStateId}" data-state="${state}" checked>
+                    <label class="form-check-label" for="state-${safeStateId}"><span class="state-name">${state}</span></label>
+                </div>`;
+                domDiv.innerHTML += `<div class="state-group" data-state="${state}">`;
                 stateToDomiciles[state].sort().forEach(code => {
                     const info = airportInfo[code] || { name: code, city: '', state: '' };
                     const tooltip = `${info.name} (${info.city ? info.city + ', ' : ''}${info.state})`;
                     domDiv.innerHTML += `<div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="${code}" id="dom-${code}" checked>
-                        <label class="form-check-label domicile-label" for="dom-${code}" title="${tooltip}">${code}</label>
+                        <input class="form-check-input domicile-control" type="checkbox" value="${code}" id="dom-${code}" data-state="${state}" checked>
+                        <label class="form-check-label domicile-label" for="dom-${code}" title="${tooltip}"><a class="airport-link" href="https://www.flightsfrom.com/explorer/${code}?mapview" target="_blank">${code}</a></label>
                     </div>`;
                 });
-            });
-            const stateDiv = document.getElementById('stateFilters');
-            Array.from(stateSet).sort().forEach(state => {
-                stateDiv.innerHTML += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${state}" id="state-${state}" checked><label class="form-check-label state-label" for="state-${state}">${state}</label></div>`;
+                domDiv.innerHTML += `</div></div>`;
             });
             document.querySelectorAll('.form-check-input').forEach(cb => cb.addEventListener('change', applyFilters));
 
-            // Add listeners for category checkboxes to auto-select all airlines in that category
+            // Add listeners for category checkboxes to auto-select/deselect all airlines in that category
             document.querySelectorAll('#categoryFilters input').forEach(catCb => {
                 catCb.addEventListener('change', function() {
                     const category = this.value;
                     const isChecked = this.checked;
-                    let currentDivider = null;
-                    Array.from(document.querySelectorAll('#airlineFilters .category-divider')).forEach(divider => {
-                        if (divider.textContent.trim() === category) {
-                            currentDivider = divider;
-                        }
+                    document.querySelectorAll('#airlineFilters .form-check[data-category="' + category + '"] input').forEach(airCb => {
+                        airCb.checked = isChecked;
                     });
-                    if (currentDivider) {
-                        let sibling = currentDivider.nextElementSibling;
-                        while (sibling && !sibling.classList.contains('category-divider')) {
-                            const cb = sibling.querySelector('input.form-check-input');
-                            if (cb) {
-                                cb.checked = isChecked;
-                            }
-                            sibling = sibling.nextElementSibling;
-                        }
+                    applyFilters();
+                });
+            });
+
+            // Add listeners for state control checkboxes
+            document.querySelectorAll('.state-control').forEach(stateCb => {
+                stateCb.addEventListener('change', function() {
+                    const state = this.dataset.state;
+                    const isChecked = this.checked;
+                    document.querySelectorAll(`.state-group[data-state="${state}"] .domicile-control`).forEach(domCb => {
+                        domCb.checked = isChecked;
+                    });
+                    applyFilters();
+                });
+            });
+
+            // Add listeners for domicile checkboxes to update state checkbox
+            document.querySelectorAll('.domicile-control').forEach(domCb => {
+                domCb.addEventListener('change', function() {
+                    const state = this.dataset.state;
+                    const stateGroup = document.querySelector(`.state-group[data-state="${state}"]`);
+                    const allDomCbs = stateGroup.querySelectorAll('.domicile-control');
+                    const checkedCount = Array.from(allDomCbs).filter(cb => cb.checked).length;
+                    const stateControl = document.querySelector(`.state-control[data-state="${state}"]`);
+                    if (checkedCount === allDomCbs.length) {
+                        stateControl.checked = true;
+                        stateControl.indeterminate = false;
+                    } else if (checkedCount === 0) {
+                        stateControl.checked = false;
+                        stateControl.indeterminate = false;
+                    } else {
+                        stateControl.checked = false;
+                        stateControl.indeterminate = true;
                     }
                     applyFilters();
                 });
@@ -334,8 +375,7 @@
         function exportSummary() {
             const selectedCategories = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(cb => cb.value);
             const selectedAirlines = Array.from(document.querySelectorAll('#airlineFilters input:checked')).map(cb => cb.value);
-            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input:checked')).map(cb => cb.value);
-            const selectedStates = Array.from(document.querySelectorAll('#stateFilters input:checked')).map(cb => cb.value);
+            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input.form-check-input:not(.state-control):checked')).map(cb => cb.value);
 
             // Determine effective airlines: selected airlines, or all from selected categories if no airlines selected
             let effectiveAirlines = new Set(selectedAirlines);
@@ -347,12 +387,9 @@
                 });
             }
 
-            // Filter domiciles based on selected domiciles and states
+            // Filter domiciles based on selected domiciles
             const filteredDomiciles = Object.keys(domicileData).filter(code => {
-                const airportState = airportInfo[code]?.state || '';
-                const matchesDomicile = selectedDomiciles.length === 0 || selectedDomiciles.includes(code);
-                const matchesState = selectedStates.length === 0 || selectedStates.includes(airportState);
-                return matchesDomicile && matchesState;
+                return selectedDomiciles.length === 0 || selectedDomiciles.includes(code);
             });
 
             // Section 1: Categories, their airlines, and bases
@@ -418,6 +455,24 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        }
+        function updateStateCheckboxes() {
+            document.querySelectorAll('.state-control').forEach(stateCb => {
+                const state = stateCb.dataset.state;
+                const stateGroup = document.querySelector(`.state-group[data-state="${state}"]`);
+                const allDomCbs = stateGroup.querySelectorAll('.domicile-control');
+                const checkedCount = Array.from(allDomCbs).filter(cb => cb.checked).length;
+                if (checkedCount === allDomCbs.length) {
+                    stateCb.checked = true;
+                    stateCb.indeterminate = false;
+                } else if (checkedCount === 0) {
+                    stateCb.checked = false;
+                    stateCb.indeterminate = false;
+                } else {
+                    stateCb.checked = false;
+                    stateCb.indeterminate = true;
+                }
+            });
         }
     </script>
 </body>
