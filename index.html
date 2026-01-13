@@ -53,6 +53,7 @@
             overflow-y: auto;
             max-height: 250px;
         }
+        #exportBtn { margin-top: 20px; }
         @media (max-width: 576px) {
             .filter-section { padding: 5px; }
             .filter-group h5 { font-size: 0.9rem; }
@@ -101,6 +102,7 @@
                 </div>
             </div>
         </div>
+        <button id="exportBtn" class="btn btn-primary d-block mx-auto">Export Summary</button>
         <!-- Interactive Map Section -->
         <div id="map"></div>
     </div>
@@ -129,6 +131,7 @@
             initMap();
             buildFilters();
             applyFilters();
+            document.getElementById('exportBtn').addEventListener('click', exportSummary);
             // Individual group All / None
             document.querySelectorAll('.select-all-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
@@ -299,9 +302,122 @@
                 stateDiv.innerHTML += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${state}" id="state-${state}" checked><label class="form-check-label state-label" for="state-${state}">${state}</label></div>`;
             });
             document.querySelectorAll('.form-check-input').forEach(cb => cb.addEventListener('change', applyFilters));
+
+            // Add listeners for category checkboxes to auto-select all airlines in that category
+            document.querySelectorAll('#categoryFilters input').forEach(catCb => {
+                catCb.addEventListener('change', function() {
+                    const category = this.value;
+                    const isChecked = this.checked;
+                    let currentDivider = null;
+                    Array.from(document.querySelectorAll('#airlineFilters .category-divider')).forEach(divider => {
+                        if (divider.textContent.trim() === category) {
+                            currentDivider = divider;
+                        }
+                    });
+                    if (currentDivider) {
+                        let sibling = currentDivider.nextElementSibling;
+                        while (sibling && !sibling.classList.contains('category-divider')) {
+                            const cb = sibling.querySelector('input.form-check-input');
+                            if (cb) {
+                                cb.checked = isChecked;
+                            }
+                            sibling = sibling.nextElementSibling;
+                        }
+                    }
+                    applyFilters();
+                });
+            });
         }
         function applyFilters() {
             buildMarkers();
+        }
+        function exportSummary() {
+            const selectedCategories = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(cb => cb.value);
+            const selectedAirlines = Array.from(document.querySelectorAll('#airlineFilters input:checked')).map(cb => cb.value);
+            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input:checked')).map(cb => cb.value);
+            const selectedStates = Array.from(document.querySelectorAll('#stateFilters input:checked')).map(cb => cb.value);
+
+            // Determine effective airlines: selected airlines, or all from selected categories if no airlines selected
+            let effectiveAirlines = new Set(selectedAirlines);
+            if (selectedAirlines.length === 0) {
+                linkData.forEach(cat => {
+                    if (selectedCategories.includes(cat.category) || selectedCategories.length === 0) {
+                        cat.links.forEach(l => effectiveAirlines.add(l.name));
+                    }
+                });
+            }
+
+            // Filter domiciles based on selected domiciles and states
+            const filteredDomiciles = Object.keys(domicileData).filter(code => {
+                const airportState = airportInfo[code]?.state || '';
+                const matchesDomicile = selectedDomiciles.length === 0 || selectedDomiciles.includes(code);
+                const matchesState = selectedStates.length === 0 || selectedStates.includes(airportState);
+                return matchesDomicile && matchesState;
+            });
+
+            // Section 1: Categories, their airlines, and bases
+            let section1 = 'Section 1: Categories, Airlines, and Bases\n\n';
+            linkData.forEach(cat => {
+                if (selectedCategories.includes(cat.category) || selectedCategories.length === 0) {
+                    section1 += `${cat.category}\n`;
+                    cat.links.forEach(l => {
+                        if (effectiveAirlines.has(l.name)) {
+                            const bases = l.domiciles.filter(base => filteredDomiciles.includes(base)).sort().join(', ');
+                            section1 += `  - ${l.name}: ${bases || 'No bases matching filters'}\n`;
+                        }
+                    });
+                    section1 += '\n';
+                }
+            });
+            section1 += '------------------------------------------------------------\n\n';
+
+            // Section 2: Airlines (alphabetical), category, and bases
+            let section2 = 'Section 2: Airlines, Category, and Bases\n\n';
+            const allFilteredAirlines = Array.from(effectiveAirlines).sort();
+            allFilteredAirlines.forEach(airlineName => {
+                const airline = linkData.flatMap(cat => cat.links).find(l => l.name === airlineName);
+                if (airline) {
+                    const cat = linkData.find(c => c.links.some(l => l.name === airlineName)).category;
+                    const bases = airline.domiciles.filter(base => filteredDomiciles.includes(base)).sort().join(', ');
+                    section2 += `${airlineName} (${cat}): ${bases || 'No bases matching filters'}\n`;
+                }
+            });
+            section2 += '\n------------------------------------------------------------\n\n';
+
+            // Section 3: Bases by state, with airlines (only states with bases)
+            let section3 = 'Section 3: Bases by State, with Airlines\n\n';
+            const stateToBases = {};
+            filteredDomiciles.forEach(code => {
+                const state = airportInfo[code]?.state || 'Other';
+                if (!stateToBases[state]) stateToBases[state] = {};
+                const filteredAirlines = domicileData[code].airlines.filter(a => effectiveAirlines.has(a));
+                if (filteredAirlines.length > 0) {
+                    stateToBases[state][code] = filteredAirlines.sort().join(', ');
+                }
+            });
+            Object.keys(stateToBases).sort().forEach(state => {
+                const basesInState = Object.keys(stateToBases[state]);
+                if (basesInState.length > 0) {
+                    section3 += `${state}\n`;
+                    basesInState.sort().forEach(code => {
+                        const airlines = stateToBases[state][code];
+                        section3 += `  - ${code}: ${airlines}\n`;
+                    });
+                    section3 += '\n';
+                }
+            });
+
+            const summary = `${section1}${section2}${section3}`;
+
+            const blob = new Blob([summary], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'pilot_base_summary.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
