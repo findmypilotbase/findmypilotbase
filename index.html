@@ -63,7 +63,7 @@
             color: #0056b3;
         }
         .state-group {
-            padding-left: 20px;
+            padding-left: 0;
         }
         .state-block:not(:first-child) {
             border-top: 1px solid #dee2e6;
@@ -72,6 +72,18 @@
         }
         .state-name {
             font-weight: bold;
+        }
+        .nav-bar {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .nav-bar a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
         }
         @media (max-width: 576px) {
             .filter-section { padding: 5px; }
@@ -82,7 +94,12 @@
 </head>
 <body>
     <div class="container my-4">
-        <h1 class="text-center mb-4">Find My Pilot Base</h1>
+        <h1 class="text-center mb-4"><a href="https://findmypilotbase.github.io/findmypilotbase/" style="text-decoration: none; color: inherit;">Find My Pilot Base</a></h1>
+        <div class="nav-bar">
+            <a href="https://findmypilotbase.github.io/findmypilotbase/">Home</a> |
+            <a href="https://findmypilotbase.github.io/findmypilotbase/hiring-links.html">Domicile Lists</a> |
+            <a href="mailto:findmypilotbase@gmail.com">Contact</a>
+        </div>
         <p class="text-center mb-3">Use this interactive map to explore pilot domiciles across various airlines. Filter by categories, airlines, domiciles, or states to customize your view and see detailed information about bases, including associated carriers and hiring links.</p>
         <p class="text-center mb-4">Scroll down below the map to find links directly to each airline's hiring page. You can also click the link within the filters dropdown.</p>
         <p class="text-center mb-4">To provide feedback, please email us at <a href="mailto:findmypilotbase@gmail.com">FindMyPilotBase@gmail.com</a>.</p>
@@ -110,6 +127,10 @@
                             </div>
                             <div class="col-lg-4 col-md-6 filter-group">
                                 <h5>Domiciles <a href="#" class="select-all-btn" data-group="domicile" data-action="select">All</a> | <a href="#" class="select-all-btn" data-group="domicile" data-action="deselect">None</a></h5>
+                                <div class="input-group mb-2">
+                                    <input type="text" id="domicileSearch" class="form-control" placeholder="Search domiciles...">
+                                    <button class="btn btn-outline-secondary" type="button" id="clearDomicileSearch">Clear</button>
+                                </div>
                                 <div id="domicileFilters"></div>
                             </div>
                         </div>
@@ -155,12 +176,8 @@
                     const action = this.dataset.action;
                     const selector = group === 'category' ? '#categoryFilters input' :
                                      group === 'airline' ? '#airlineFilters input' :
-                                     group === 'domicile' ? '#domicileFilters input.form-check-input:not(.state-control)' :
-                                     '#stateFilters input';
+                                     group === 'domicile' ? '#domicileFilters input' : '';
                     document.querySelectorAll(selector).forEach(cb => cb.checked = (action === 'select'));
-                    if (group === 'domicile') {
-                        updateStateCheckboxes();
-                    }
                     applyFilters();
                 });
             });
@@ -174,6 +191,12 @@
                 e.preventDefault();
                 document.querySelectorAll('.form-check-input').forEach(cb => cb.checked = false);
                 applyFilters();
+            });
+            // Domicile search
+            document.getElementById('domicileSearch').addEventListener('input', filterDomiciles);
+            document.getElementById('clearDomicileSearch').addEventListener('click', () => {
+                document.getElementById('domicileSearch').value = '';
+                filterDomiciles();
             });
         });
         function parseRawData(text) {
@@ -240,7 +263,7 @@
             clusterGroup.clearLayers();
             const selectedCategories = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(cb => cb.value);
             const selectedAirlines = Array.from(document.querySelectorAll('#airlineFilters input:checked')).map(cb => cb.value);
-            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input.form-check-input:not(.state-control):checked')).map(cb => cb.value);
+            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input:checked')).map(cb => cb.value);
             geojson.features.forEach(feature => {
                 const code = feature.properties.code;
                 if (!domicileData[code]) return;
@@ -303,13 +326,9 @@
             // Sort states
             const sortedStates = Object.keys(stateToDomiciles).sort();
             sortedStates.forEach((state, index) => {
-                const safeStateId = state.replace(/[^a-z0-9]/gi, '');
                 const stateBlockClass = index > 0 ? 'state-block' : 'state-block first';
                 domDiv.innerHTML += `<div class="${stateBlockClass}">`;
-                domDiv.innerHTML += `<div class="form-check">
-                    <input class="form-check-input state-control" type="checkbox" id="state-${safeStateId}" data-state="${state}" checked>
-                    <label class="form-check-label" for="state-${safeStateId}"><span class="state-name">${state}</span></label>
-                </div>`;
+                domDiv.innerHTML += `<span class="state-name">${state}</span>`;
                 domDiv.innerHTML += `<div class="state-group" data-state="${state}">`;
                 stateToDomiciles[state].sort().forEach(code => {
                     const info = airportInfo[code] || { name: code, city: '', state: '' };
@@ -334,40 +353,6 @@
                     applyFilters();
                 });
             });
-
-            // Add listeners for state control checkboxes
-            document.querySelectorAll('.state-control').forEach(stateCb => {
-                stateCb.addEventListener('change', function() {
-                    const state = this.dataset.state;
-                    const isChecked = this.checked;
-                    document.querySelectorAll(`.state-group[data-state="${state}"] .domicile-control`).forEach(domCb => {
-                        domCb.checked = isChecked;
-                    });
-                    applyFilters();
-                });
-            });
-
-            // Add listeners for domicile checkboxes to update state checkbox
-            document.querySelectorAll('.domicile-control').forEach(domCb => {
-                domCb.addEventListener('change', function() {
-                    const state = this.dataset.state;
-                    const stateGroup = document.querySelector(`.state-group[data-state="${state}"]`);
-                    const allDomCbs = stateGroup.querySelectorAll('.domicile-control');
-                    const checkedCount = Array.from(allDomCbs).filter(cb => cb.checked).length;
-                    const stateControl = document.querySelector(`.state-control[data-state="${state}"]`);
-                    if (checkedCount === allDomCbs.length) {
-                        stateControl.checked = true;
-                        stateControl.indeterminate = false;
-                    } else if (checkedCount === 0) {
-                        stateControl.checked = false;
-                        stateControl.indeterminate = false;
-                    } else {
-                        stateControl.checked = false;
-                        stateControl.indeterminate = true;
-                    }
-                    applyFilters();
-                });
-            });
         }
         function applyFilters() {
             buildMarkers();
@@ -375,7 +360,7 @@
         function exportSummary() {
             const selectedCategories = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(cb => cb.value);
             const selectedAirlines = Array.from(document.querySelectorAll('#airlineFilters input:checked')).map(cb => cb.value);
-            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input.form-check-input:not(.state-control):checked')).map(cb => cb.value);
+            const selectedDomiciles = Array.from(document.querySelectorAll('#domicileFilters input:checked')).map(cb => cb.value);
 
             // Determine effective airlines: selected airlines, or all from selected categories if no airlines selected
             let effectiveAirlines = new Set(selectedAirlines);
@@ -456,22 +441,16 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
-        function updateStateCheckboxes() {
-            document.querySelectorAll('.state-control').forEach(stateCb => {
-                const state = stateCb.dataset.state;
-                const stateGroup = document.querySelector(`.state-group[data-state="${state}"]`);
-                const allDomCbs = stateGroup.querySelectorAll('.domicile-control');
-                const checkedCount = Array.from(allDomCbs).filter(cb => cb.checked).length;
-                if (checkedCount === allDomCbs.length) {
-                    stateCb.checked = true;
-                    stateCb.indeterminate = false;
-                } else if (checkedCount === 0) {
-                    stateCb.checked = false;
-                    stateCb.indeterminate = false;
-                } else {
-                    stateCb.checked = false;
-                    stateCb.indeterminate = true;
-                }
+        function filterDomiciles() {
+            const query = document.getElementById('domicileSearch').value.toLowerCase();
+            document.querySelectorAll('#domicileFilters .form-check').forEach(item => {
+                const code = item.querySelector('input').value.toLowerCase();
+                const tooltip = item.querySelector('label').getAttribute('title').toLowerCase();
+                item.style.display = (code.includes(query) || tooltip.includes(query)) ? '' : 'none';
+            });
+            document.querySelectorAll('#domicileFilters .state-block').forEach(block => {
+                const visibleItems = block.querySelectorAll('.form-check:not([style*="none"])').length;
+                block.style.display = visibleItems > 0 ? '' : 'none';
             });
         }
     </script>
