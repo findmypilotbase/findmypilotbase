@@ -19,8 +19,6 @@
         .airport-name { font-size: 1.1rem; font-weight: 600; color: #0066cc; text-decoration: none; }
         .airport-name:hover { text-decoration: underline; }
         .airport-details { font-size: 0.85rem; color: #6c757d; margin-top: 5px; }
-        .airport-airlines { font-size: 0.85rem; color: #6c757d; margin-top: 5px; }
-        .airport-category { font-weight: bold; margin-top: 5px; }
         .airport-link {
             color: inherit;
             font-weight: normal;
@@ -28,13 +26,6 @@
         }
         .airport-link:hover {
             color: #0056b3;
-        }
-        .airline-link {
-            color: inherit;
-            text-decoration: none;
-        }
-        .airline-link:hover {
-            text-decoration: underline;
         }
         .nav-bar {
             text-align: center;
@@ -72,23 +63,10 @@
     </div>
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="data.js"></script> <!-- Shared airline data file -->
     <script src="airport-data.js"></script> <!-- Shared airport data file -->
     <script>
         let stateData = [];
-        let domicileData = {};
-        let linkData = [];
-        let airportInfo = {};
         document.addEventListener('DOMContentLoaded', () => {
-            // Parse airport data
-            airportData.features.forEach(f => {
-                const p = f.properties;
-                airportInfo[p.code] = { name: p.name, city: p.city || '', state: p.state || '' };
-            });
-            // Parse airline data
-            const rawText = rawAirlineData;
-            parseRawData(rawText);
-            buildDomicileData();
             parseAirportData();
             renderSections();
             document.getElementById('clearSearch').addEventListener('click', () => {
@@ -97,50 +75,14 @@
             });
             document.getElementById('searchInput').addEventListener('input', searchDomiciles);
         });
-        function parseRawData(text) {
-            const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-            let current = null;
-            linkData = [];
-            lines.forEach(line => {
-                if (line.startsWith('# ')) {
-                    const cat = line.slice(2).trim();
-                    if (cat) current = { category: cat, links: [] };
-                    linkData.push(current);
-                } else if (line.includes('|') && current) {
-                    const parts = line.split('|').map(s => s.trim());
-                    const name = parts[0];
-                    const url = parts[1] || '#';
-                    const domiciles = parts[2] ? parts[2].split(',').map(c => c.trim()).filter(c => c) : [];
-                    current.links.push({ name, url, domiciles });
-                }
-            });
-        }
-        function buildDomicileData() {
-            linkData.forEach(cat => {
-                const category = cat.category;
-                cat.links.forEach(link => {
-                    link.domiciles.forEach(code => {
-                        if (!domicileData[code]) domicileData[code] = { groupedAirlines: {}, urls: {} };
-                        if (!domicileData[code].groupedAirlines[category]) domicileData[code].groupedAirlines[category] = [];
-                        domicileData[code].groupedAirlines[category].push(link.name);
-                        domicileData[code].urls[link.name] = link.url;
-                    });
-                });
-            });
-            // Sort airlines within each category
-            Object.keys(domicileData).forEach(code => {
-                Object.keys(domicileData[code].groupedAirlines).forEach(cat => {
-                    domicileData[code].groupedAirlines[cat].sort();
-                });
-            });
-        }
         function parseAirportData() {
-            // Build stateToAirports mapping, only include airports that are domiciles
+            // Build stateToAirports mapping
             let stateToAirports = {};
-            Object.keys(domicileData).forEach(code => {
-                const state = airportInfo[code]?.state || 'Other';
+            airportData.features.forEach(f => {
+                const p = f.properties;
+                const state = p.state || 'Other';
                 if (!stateToAirports[state]) stateToAirports[state] = [];
-                stateToAirports[state].push({ code: code, name: airportInfo[code].name, city: airportInfo[code].city || '' });
+                stateToAirports[state].push({ code: p.code, name: p.name, city: p.city || '' });
             });
             // Convert to array of {state, airports} and sort states alphabetically
             stateData = Object.keys(stateToAirports).sort().map(state => ({
@@ -159,19 +101,9 @@
                 stateObj.airports.forEach(airport => {
                     const item = document.createElement('div');
                     item.className = 'airport-item';
-                    const grouped = domicileData[airport.code]?.groupedAirlines || {};
-                    const categoryOrder = ["Legacy Carriers", "Major / National / Low Cost Carriers (LCC)", "Cargo Airlines", "Regional Airlines", "Fractional Carriers"];
-                    let airlinesHtml = '';
-                    categoryOrder.forEach(cat => {
-                        if (grouped[cat] && grouped[cat].length > 0) {
-                            const catAirlines = grouped[cat].map(airline => `<a class="airline-link" href="${domicileData[airport.code].urls[airline]}" target="_blank">${airline}</a>`).join(', ');
-                            airlinesHtml += `<div class="airport-category">${cat}: ${catAirlines}</div>`;
-                        }
-                    });
                     item.innerHTML = `
-                        <span class="airport-name">${airport.city ? airport.city : ''}</span>
+                        <span class="airport-name">${airport.city ? airport.city + '' : ''}</span>                    
                         <div class="airport-details"><a class="airport-link" href="https://www.flightsfrom.com/explorer/${airport.code}?mapview" target="_blank">${airport.code}</a> - ${airport.name}</div>
-                        <div class="airport-airlines">${airlinesHtml || 'None'}</div>
                     `;
                     list.appendChild(item);
                 });
@@ -184,8 +116,7 @@
             document.querySelectorAll('.airport-item').forEach(item => {
                 const city = item.querySelector('.airport-name').textContent.toLowerCase();
                 const details = item.querySelector('.airport-details').textContent.toLowerCase();
-                const airlines = item.querySelector('.airport-airlines')?.textContent.toLowerCase() || '';
-                item.style.display = (city.includes(query) || details.includes(query) || airlines.includes(query)) ? '' : 'none';
+                item.style.display = (city.includes(query) || details.includes(query)) ? '' : 'none';
             });
             document.querySelectorAll('.category-section').forEach(section => {
                 const visibleItems = section.querySelectorAll('.airport-item:not([style*="none"])').length;
