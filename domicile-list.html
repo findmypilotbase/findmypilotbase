@@ -102,7 +102,7 @@
                     const item = document.createElement('div');
                     item.className = 'airport-item';
                     item.innerHTML = `
-                        <span class="airport-name">${airport.city ? airport.city + ', ' : ''}${airport.state}</span>
+                        <span class="airport-name">${airport.city ? airport.city + '' : ''}</span>                    
                         <div class="airport-details"><a class="airport-link" href="https://www.flightsfrom.com/explorer/${airport.code}?mapview" target="_blank">${airport.code}</a> - ${airport.name}</div>
                     `;
                     list.appendChild(item);
