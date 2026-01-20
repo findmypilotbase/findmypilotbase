@@ -47,7 +47,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-96.8158,46.9207]},"properties":{"code":"FAR","name":"Hector International Airport","city":"Fargo","state":"ND"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-119.718,36.7762]},"properties":{"code":"FAT","name":"Fresno Yosemite International Airport","city":"Fresno","state":"CA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.1527,26.0726]},"properties":{"code":"FLL","name":"Fort Lauderdale-Hollywood International","city":"Fort Lauderdale","state":"FL"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.1943,42.8808]},"properties":{"code":"FNT","name":"Bishop International Airport","city":"Flint","state":"MI"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.7454,42.9676]},"properties":{"code":"FNT","name":"Bishop International Airport","city":"Flint","state":"MI"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-96.7419,43.582]},"properties":{"code":"FSD","name":"Joe Foss Field","city":"Sioux Falls","state":"SD"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-117.5342,47.6192]},"properties":{"code":"GEG","name":"Spokane International","city":"Spokane","state":"WA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-85.5228,42.8808]},"properties":{"code":"GRR","name":"Gerald R. Ford International Airport","city":"Grand Rapids","state":"MI"}},
