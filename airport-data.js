@@ -8,7 +8,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.8017,42.7483]},"properties":{"code":"ALB","name":"Albany International Airport","city":"Albany","state":"NY"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-149.9964,61.1744]},"properties":{"code":"ANC","name":"Ted Stevens Anchorage International","city":"Anchorage","state":"AK"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-84.4281,33.6367]},"properties":{"code":"ATL","name":"Hartsfield-Jackson Atlanta International","city":"Atlanta","state":"GA"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-88.1296,44.2619]},"properties":{"code":"ATW","name":"Appleton International Airport","city":"Appleton","state":"WI"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-88.5187,44.2578]},"properties":{"code":"ATW","name":"Appleton International Airport","city":"Appleton","state":"WI"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-97.6699,30.1945]},"properties":{"code":"AUS","name":"Austin-Bergstrom International Airport","city":"Austin","state":"TX"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.5541,35.8111]},"properties":{"code":"AVL","name":"Asheville Regional Airport","city":"Asheville","state":"NC"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-72.6832,41.939]},"properties":{"code":"BDL","name":"Bradley International Airport","city":"Windsor Locks","state":"CT"}},
