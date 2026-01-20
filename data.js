@@ -45,11 +45,15 @@ Mesa Airlines | https://careers.rjet.com/airline-careers/pilot/ | DFW, IAH, PHX
 Piedmont Airlines | https://piedmont-airlines.com/pilots/ | CLT, MDT, PHL
 PSA Airlines | https://www.psaairlines.com/first-officers/ | CLT, DAY, DCA, DFW, PHL
 Republic Airways | https://careers.rjet.com/airline-careers/pilot/ | BOS, CMH, CVG, DCA, EWR, IND, JFK, ORD, PHL
-SkyWest | https://www.skywest.com/skywest-airline-jobs/career-guides/pilot-jobs | DEN, DFW, DTW, LAX, MSP, ORD, PHX, SEA, SLC
+SkyWest | https://www.skywest.com/skywest-airline-jobs/career-guides/pilot-jobs | ATL, AUS, BOI, COS, DEN, DFW, DTW, FAT, IAH, LAX, MSP, ORD, PDX, PHX, PSP, SAN, SEA, SFO, SLC, TUS
 
 # Fractional Carriers
 
-NetJets | https://www.netjets.com/en-us/careers/ | ABQ, ALB, ATL, ATW, AUS, AVL, BDL, BHM, BNA, BOI, BOS, BTV, BUF, BUR, BWI, BZN, CAE, CHA, CHS, CID, CLE, CLT, CMH, COS, CVG, DAY, DCA, DEN, DFW, DSM, DTW, ECP, ELP, EUG, EWR, EYW, FAR, FAT, FSD, FLL, GEG, GRR, GSO, GSP, HOU, HPN, HRL, HSV, IAD, IAH, ICT, ILM, IND, JAN, JAX, JFK, LAS, LAX, LBB, LEX, LGA, LGB, LIT, MAF, MCI, MCO, MFR, MDT, MDW, MEM, MHT, MIA, MKE, MSP, MSN, MSY, MYR, OAK, OKC, OMA, ONT, ORD, ORF, PBI, PDX, PHL, PHX, PIT, PNS, PSP, PVD, PWM, RDM, RDU, RIC, RNO, ROC, RSW, SAN, SAT, SAV, SBA, SDF, SEA, SFO, SGF, SJC, SLC, SMF, SNA, SRQ, STL, SYR, TPA, TUL, TUS, TYS, VPS, XNA
+Airshare | https://careers.flyairshare.com/pilots/ | AUS, BNA, BUF, BWI, CHS, CLE, CLT, CMH, COS, CVG, DAL, DEN, DFW, DTW, EWR, FLL, GRR, GSO, GSP, HOU, IAD, IAH, ICT, IND, ISP, JAX, JFK, LEX, LGA, LNK, MCO, MDW, MEM, MKC, MKE, MLB, MSY, OKC, OMA, ORD, PBI, PHL, PIT, RDU, RIC, ROC, RSW, SAT, SAV, SDF, SHV, STL, SYR, TEB, TPA, TYS
 FlexJet | https://careers.flexjet.com/us/en/US-pilot/ | ABQ, ALB, ATL, ATW, AUS, AVL, BDL, BHM, BNA, BOI, BOS, BTV, BUF, BUR, BWI, BZN, CAE, CHA, CHS, CID, CLE, CLT, CMH, COS, CVG, DAY, DCA, DEN, DFW, DSM, DTW, ECP, ELP, EUG, EWR, EYW, FAR, FAT, FSD, FLL, GEG, GRR, GSO, GSP, HOU, HPN, HRL, HSV, IAD, IAH, ICT, ILM, IND, JAN, JAX, JFK, LAS, LAX, LBB, LEX, LGA, LGB, LIT, MAF, MCI, MCO, MFR, MDT, MDW, MEM, MHT, MIA, MKE, MSP, MSN, MSY, MYR, OAK, OKC, OMA, ONT, ORD, ORF, PBI, PDX, PHL, PHX, PIT, PNS, PSP, PVD, PWM, RDM, RDU, RIC, RNO, ROC, RSW, SAN, SAT, SAV, SBA, SDF, SEA, SFO, SGF, SJC, SLC, SMF, SNA, SRQ, STL, SYR, TPA, TUL, TUS, TYS, VPS, XNA, SEA, SLC
+NetJets | https://www.netjets.com/en-us/careers/ | ABQ, ALB, ATL, ATW, AUS, AVL, BDL, BHM, BNA, BOI, BOS, BTV, BUF, BUR, BWI, BZN, CAE, CHA, CHS, CID, CLE, CLT, CMH, COS, CVG, DAY, DCA, DEN, DFW, DSM, DTW, ECP, ELP, EUG, EWR, EYW, FAR, FAT, FSD, FLL, GEG, GRR, GSO, GSP, HOU, HPN, HRL, HSV, IAD, IAH, ICT, ILM, IND, JAN, JAX, JFK, LAS, LAX, LBB, LEX, LGA, LGB, LIT, MAF, MCI, MCO, MFR, MDT, MDW, MEM, MHT, MIA, MKE, MSP, MSN, MSY, MYR, OAK, OKC, OMA, ONT, ORD, ORF, PBI, PDX, PHL, PHX, PIT, PNS, PSP, PVD, PWM, RDM, RDU, RIC, RNO, ROC, RSW, SAN, SAT, SAV, SBA, SDF, SEA, SFO, SGF, SJC, SLC, SMF, SNA, SRQ, STL, SYR, TPA, TUL, TUS, TYS, VPS, XNA
+PlaneSense | https://www.planesense.com/careers/#pilots | BDL, BNA, BTV, BWI, CHS, CLT, CMH, CVG, DCA, DEN, DFW, DTW, EWR, HOU, HPN, IAD, IAH, IND, JAX, JFK, LAS, LAX, LGA, MCI, MCO, MDW, MEM, MIA, MSP, MSY, ORD, PBI, PDK, PDX, PHL, PHX, PIT, PVD, PSM, RIC, SAN, SEA, SFO, SLC, STL, TPA
+Vista/XO Jet | https://vistaglobal.com/careers/pilot | 
+
 `.trim();
 
