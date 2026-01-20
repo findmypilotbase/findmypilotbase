@@ -141,6 +141,6 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-83.3538,35.8111]},"properties":{"code":"TYS","name":"McGhee Tyson Airport","city":"Knoxville","state":"TN"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-86.6782,30.4861]},"properties":{"code":"VPS","name":"Destin–Fort Walton Beach Airport","city":"Valparaiso","state":"FL"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.3956,27.5432]},"properties":{"code":"VRB","name":"Vero Beach Regional Airport","city":"Vero Beach","state":"FL"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-94.3633,35.3931]},"properties":{"code":"XNA","name":"Northwest Arkansas National Airport","city":"Bentonville","state":"AR"}}
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-94.3028,36.2795]},"properties":{"code":"XNA","name":"Northwest Arkansas National Airport","city":"Bentonville","state":"AR"}}
 ]
 };
