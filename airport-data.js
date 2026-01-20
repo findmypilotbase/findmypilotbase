@@ -112,7 +112,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-116.5063,33.8297]},"properties":{"code":"PSP","name":"Palm Springs International Airport","city":"Palm Springs","state":"CA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.436,41.7249]},"properties":{"code":"PVD","name":"Rhode Island T. F. Green International Airport","city":"Warwick","state":"RI"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-111.7224,40.2190]},"properties":{"code":"PVU","name":"Provo Municipal Airport","city":"Provo","state":"UT"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-70.3093,41.6683]},"properties":{"code":"PWM","name":"Portland International Jetport","city":"Portland","state":"ME"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-70.3086,43.6461]},"properties":{"code":"PWM","name":"Portland International Jetport","city":"Portland","state":"ME"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-121.1504,44.2543]},"properties":{"code":"RDM","name":"Roberts Field","city":"Redmond","state":"OR"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-78.7875,35.8776]},"properties":{"code":"RDU","name":"Raleigh-Durham International","city":"Raleigh","state":"NC"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-77.6724,37.5052]},"properties":{"code":"RIC","name":"Richmond International Airport","city":"Richmond","state":"VA"}},
