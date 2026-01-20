@@ -36,7 +36,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-77.0377,38.8521]},"properties":{"code":"DCA","name":"Ronald Reagan Washington National","city":"Washington","state":"DC"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-104.6732,39.8617]},"properties":{"code":"DEN","name":"Denver International","city":"Denver","state":"CO"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-97.038,32.8968]},"properties":{"code":"DFW","name":"Dallas/Fort Worth International","city":"Dallas/Fort Worth","state":"TX"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.3876,41.5341]},"properties":{"code":"DSM","name":"Des Moines International Airport","city":"Des Moines","state":"IA"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-93.6571,41.5341]},"properties":{"code":"DSM","name":"Des Moines International Airport","city":"Des Moines","state":"IA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-83.3534,42.2124]},"properties":{"code":"DTW","name":"Detroit Metropolitan Wayne County","city":"Detroit","state":"MI"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-85.7954,30.3571]},"properties":{"code":"ECP","name":"Northwest Florida Beaches International Airport","city":"Panama City Beach","state":"FL"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-106.3876,31.8044]},"properties":{"code":"ELP","name":"El Paso International Airport","city":"El Paso","state":"TX"}},
