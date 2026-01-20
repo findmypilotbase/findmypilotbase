@@ -89,7 +89,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.8726,42.3721]},"properties":{"code":"MFR","name":"Rogue Valley International-Medford","city":"Medford","state":"OR"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.289,42.9304]},"properties":{"code":"MHT","name":"Manchester-Boston Regional Airport","city":"Manchester","state":"NH"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.2906,25.7933]},"properties":{"code":"MIA","name":"Miami International","city":"Miami","state":"FL"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-87.8966,43.1399]},"properties":{"code":"MKE","name":"Milwaukee Mitchell International Airport","city":"Milwaukee","state":"WI"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-87.8943,42.9469]},"properties":{"code":"MKE","name":"Milwaukee Mitchell International Airport","city":"Milwaukee","state":"WI"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-89.3375,43.1399]},"properties":{"code":"MSN","name":"Dane County Regional Airport","city":"Madison","state":"WI"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-93.2218,44.882]},"properties":{"code":"MSP","name":"Minneapolis-St. Paul International","city":"Minneapolis","state":"MN"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-90.0701,29.9934]},"properties":{"code":"MSY","name":"Louis Armstrong New Orleans International Airport","city":"New Orleans","state":"LA"}},
