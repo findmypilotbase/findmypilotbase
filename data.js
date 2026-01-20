@@ -6,7 +6,7 @@ const rawAirlineData = `
 
 Alaska Airlines | https://careers.alaskaair.com/career-opportunities/pilots/alaska-airlines/ | ANC, LAX, PDX, SEA, SFO
 American Airlines | https://jobs.aa.com/go/Pilot/9286400/ | BOS, CLT, DCA, DFW, LAX, LGA, MIA, ORD, PHL, PHX
-Delta Air Lines | https://www.delta.com/us/en/careers/pilots/overview | ATL, DTW, LAX, MSP, NYC, SEA, SLC
+Delta Air Lines | https://www.delta.com/us/en/careers/pilots/overview | ATL, BOS, DTW, LAX, MSP, NYC, SEA, SLC
 Hawaiian Airlines | https://www.hawaiianairlines.com/careers/first-officer | CVG, HNL
 United Airlines | https://careers.united.com/us/en/pilots | CLE, DEN, EWR, GUM, IAD, IAH, LAX, MCO, ORD, TPA, SFO
 
@@ -44,7 +44,7 @@ Horizon Air | https://careers.alaskaair.com/career-opportunities/pilots/horizon-
 Mesa Airlines | https://careers.rjet.com/airline-careers/pilot/ | DFW, IAH, PHX
 Piedmont Airlines | https://piedmont-airlines.com/pilots/ | CLT, MDT, PHL
 PSA Airlines | https://www.psaairlines.com/first-officers/ | CLT, DAY, DCA, DFW, PHL
-Republic Airways | https://careers.rjet.com/airline-careers/pilot/ | BOS, CMH, CVG, DCA, EWR, IND, JFK, ORD, PHL
+Republic Airways | https://careers.rjet.com/airline-careers/pilot/ | BOS, CMH, DCA, EWR, IND, JFK, LGA, ORD, PHL, PIT, SDF
 SkyWest | https://www.skywest.com/skywest-airline-jobs/career-guides/pilot-jobs | ATL, AUS, BOI, COS, DEN, DFW, DTW, FAT, IAH, LAX, MSP, ORD, PDX, PHX, PSP, SAN, SEA, SFO, SLC, TUS
 
 # Fractional Carriers
