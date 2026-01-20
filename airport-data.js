@@ -14,7 +14,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-72.6832,41.939]},"properties":{"code":"BDL","name":"Bradley International Airport","city":"Windsor Locks","state":"CT"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-86.7535,33.5629]},"properties":{"code":"BHM","name":"Birmingham-Shuttlesworth International Airport","city":"Birmingham","state":"AL"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.5360,48.7923]},"properties":{"code":"BLI","name":"Bellingham International Airport","city":"Bellingham","state":"WA"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.7703,36.1245]},"properties":{"code":"BNA","name":"Nashville International Airport","city":"Nashville","state":"TN"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-86.6800,36.1267]},"properties":{"code":"BNA","name":"Nashville International Airport","city":"Nashville","state":"TN"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-116.2229,43.5644]},"properties":{"code":"BOI","name":"Boise Airport","city":"Boise","state":"ID"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.0052,42.3643]},"properties":{"code":"BOS","name":"Boston Logan International","city":"Boston","state":"MA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.1533,42.9429]},"properties":{"code":"BTV","name":"Burlington International Airport","city":"Burlington","state":"VT"}},
@@ -138,7 +138,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.5332,27.9755]},"properties":{"code":"TPA","name":"Tampa International","city":"Tampa","state":"FL"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-95.8881,36.1984]},"properties":{"code":"TUL","name":"Tulsa International Airport","city":"Tulsa","state":"OK"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-110.941,32.1161]},"properties":{"code":"TUS","name":"Tucson International Airport","city":"Tucson","state":"AZ"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.3538,35.8111]},"properties":{"code":"TYS","name":"McGhee Tyson Airport","city":"Knoxville","state":"TN"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-83.9946,35.8067]},"properties":{"code":"TYS","name":"McGhee Tyson Airport","city":"Knoxville","state":"TN"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-86.6782,30.4861]},"properties":{"code":"VPS","name":"Destin–Fort Walton Beach Airport","city":"Valparaiso","state":"FL"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.3956,27.5432]},"properties":{"code":"VRB","name":"Vero Beach Regional Airport","city":"Vero Beach","state":"FL"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-94.3028,36.2795]},"properties":{"code":"XNA","name":"Northwest Arkansas National Airport","city":"Bentonville","state":"AR"}}
