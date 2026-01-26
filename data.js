@@ -4,38 +4,38 @@ const rawAirlineData = `
 
 # Legacy Carriers
 
-Alaska Airlines | https://careers.alaskaair.com/career-opportunities/pilots/alaska-airlines/ | ANC, LAX, PDX, SEA, SFO
-American Airlines | https://jobs.aa.com/go/Pilot/9286400/ | BOS, CLT, DCA, DFW, LAX, LGA, MIA, ORD, PHL, PHX
-Delta Air Lines | https://www.delta.com/us/en/careers/pilots/overview | ATL, BOS, DTW, LAX, MSP, NYC, SEA, SLC
-Hawaiian Airlines | https://www.hawaiianairlines.com/careers/first-officer | CVG, HNL
-United Airlines | https://careers.united.com/us/en/pilots | CLE, DEN, EWR, GUM, IAD, IAH, LAX, MCO, ORD, TPA, SFO
+Alaska Airlines (AS) | https://careers.alaskaair.com/career-opportunities/pilots/alaska-airlines/ | ANC, LAX, PDX, SEA, SFO
+American Airlines (AA) | https://jobs.aa.com/go/Pilot/9286400/ | BOS, CLT, DCA, DFW, LAX, LGA, MIA, ORD, PHL, PHX
+Delta Air Lines (DL) | https://www.delta.com/us/en/careers/pilots/overview | ATL, BOS, DTW, LAX, MSP, NYC, SEA, SLC
+Hawaiian Airlines (HA) | https://www.hawaiianairlines.com/careers/first-officer | CVG, HNL
+United Airlines (UA) | https://careers.united.com/us/en/pilots | CLE, DEN, EWR, GUM, IAD, IAH, LAX, MCO, ORD, TPA, SFO
 
 # Major / National / Low Cost Carriers (LCC)
 
-Allegiant Air | https://www.allegiantair.com/careers/pilots | ABE, ATW, AVL, BLI, BNA, CVG, DSM, FLL, FNT, GRR, IND, IWA, LAS, LAX, PGD, PIE, PIT, PVU, SAV, SFB, TYS, VPS
-Avelo Airlines | https://www.aveloair.com/pilots | BDL, ELP, HVN, ILG, IWA, LAL, MCO
-Breeze Airways | https://jobs.flybreeze.com/ | BDL, CHS, MCO, MSY, ORF, PVD, PVU, RSW, TPA, VRB
-Frontier Airlines | https://www.flyfrontier.com/careers/pilot/ | ATL, CLE, CVG, DEN, DFW, LAS, MCO, MDW, MIA, ORD, PHL, PHX, TPA
-JetBlue Airways | https://careers.jetblue.com/go/First-Officer/8044500/ | BOS, EWR, FLL, JFK, LAX, MCO
-Southwest Airlines | https://careers.southwestair.com/pilots | ATL, BNA, BWI, DAL, DEN, HOU, MCO, MDW, LAS, LAX, OAK, PHX
-Spirit Airlines | https://careers.spirit.com/pilots-go-further | ACY, ATL, DFW, DTW, FLL, IAH, LAS, MCO, MIA
-Sun Country Airlines | https://careers.suncountry.com/pilots | MSP
+Allegiant Air (G4) | https://www.allegiantair.com/careers/pilots | ABE, ATW, AVL, BLI, BNA, CVG, DSM, FLL, FNT, GRR, IND, IWA, LAS, LAX, PGD, PIE, PIT, PVU, SAV, SFB, TYS, VPS
+Avelo Airlines (XP) | https://www.aveloair.com/pilots | BDL, ELP, HVN, ILG, IWA, LAL, MCO
+Breeze Airways (MX) | https://jobs.flybreeze.com/ | BDL, CHS, MCO, MSY, ORF, PVD, PVU, RSW, TPA, VRB
+Frontier Airlines (F9) | https://www.flyfrontier.com/careers/pilot/ | ATL, CLE, CVG, DEN, DFW, LAS, MCO, MDW, MIA, ORD, PHL, PHX, TPA
+JetBlue Airways (B6) | https://careers.jetblue.com/go/First-Officer/8044500/ | BOS, EWR, FLL, JFK, LAX, MCO
+Southwest Airlines (WN) | https://careers.southwestair.com/pilots | ATL, BNA, BWI, DAL, DEN, HOU, MCO, MDW, LAS, LAX, OAK, PHX
+Spirit Airlines (NK) | https://careers.spirit.com/pilots-go-further | ACY, ATL, DFW, DTW, FLL, IAH, LAS, MCO, MIA
+Sun Country Airlines (SY) | https://careers.suncountry.com/pilots | MSP
 
 # Cargo Airlines
 
-ABX Air | https://www.abxair.com/careers/abx-air-pilots | CVG, ILN
-Atlas Air | https://careers.atlasairworldwide.com/fo/ | MIA
-Empire Airlines | https://www.empireairlines.com | ANC, HNL
-Everts Air Cargo | https://evertsair.com/careers/operations-jobs | ANC, FAI
-FedEx Express | https://careers.fedex.com/career-areas/pilot/ | ANC, IND, LAX, MEM, OAK
-Kalitta Air | https://www.kalittaair.com/teams/pilots | CVG, JFK
-Key Lime Air | https://www.keylimeair.com/about/careers/ | DEN
+ABX Air (GB) | https://www.abxair.com/careers/abx-air-pilots | CVG, ILN
+Atlas Air (5Y) | https://careers.atlasairworldwide.com/fo/ | MIA
+Empire Airlines (EM) | https://www.empireairlines.com | ANC, HNL
+Everts Air Cargo (5V) | https://evertsair.com/careers/operations-jobs | ANC, FAI
+FedEx Express (FX) | https://careers.fedex.com/career-areas/pilot/ | ANC, IND, LAX, MEM, OAK
+Kalitta Air (K4) | https://www.kalittaair.com/teams/pilots | CVG, JFK
+Key Lime Air (KG) | https://www.keylimeair.com/about/careers/ | DEN
 Mountain Air Cargo | https://mtaircargo.com/pilot-careers/ | DEN, MEM
-United Parcel Service | https://www.jobs-ups.com/us/en/ups-flightpath-i | SDF, MIA, ONT
+United Parcel Service (5X) | https://www.jobs-ups.com/us/en/ups-flightpath-i | SDF, MIA, ONT
 
 # Regional Airlines
 
-Cape Air | https://www.capeair.com/pilots/ | HYA, BOS, STL
+Cape Air (9K) | https://www.capeair.com/pilots/ | HYA, BOS, STL
 CommuteAir | https://www.commuteair.com/careers/pilots/ | IAD, IAH
 Endeavor Air | https://www.endeavorair.com/content/endeavor-air/en_us/careers/pilots.html | ATL, CVG, DTW, JFK, LGA, MSP, RDU
 Envoy Air | https://www.envoyair.com/careers/pilots/ | DFW, ORD, MIA, PHX
@@ -43,8 +43,8 @@ GoJet Airlines | https://www.gojetairlines.com/pilot-careers/ | ORD, RDU, STL
 Horizon Air | https://careers.alaskaair.com/career-opportunities/pilots/horizon-air/ | ANC, BOI, GEG, MFR, PAE, PDX, SEA
 Mesa Airlines | https://careers.rjet.com/airline-careers/pilot/ | DFW, IAH, PHX
 Piedmont Airlines | https://piedmont-airlines.com/pilots/ | CLT, MDT, PHL
-PSA Airlines | https://www.psaairlines.com/first-officers/ | CLT, DAY, DCA, DFW, PHL
-Republic Airways | https://careers.rjet.com/airline-careers/pilot/ | BOS, CMH, DCA, EWR, IND, JFK, LGA, ORD, PHL, PIT, SDF
+PSA Airlines (OH) | https://www.psaairlines.com/first-officers/ | CLT, DAY, DCA, DFW, PHL
+Republic Airways (XY) | https://careers.rjet.com/airline-careers/pilot/ | BOS, CMH, DCA, EWR, IND, JFK, LGA, ORD, PHL, PIT, SDF
 SkyWest | https://www.skywest.com/skywest-airline-jobs/career-guides/pilot-jobs | ATL, AUS, BOI, COS, DEN, DFW, DTW, FAT, IAH, LAX, MSP, ORD, PDX, PHX, PSP, SAN, SEA, SFO, SLC, TUS
 
 # Fractional Carriers
