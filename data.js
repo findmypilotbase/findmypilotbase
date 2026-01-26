@@ -36,16 +36,16 @@ United Parcel Service (5X) | https://www.jobs-ups.com/us/en/ups-flightpath-i | S
 # Regional Airlines
 
 Cape Air (9K) | https://www.capeair.com/pilots/ | HYA, BOS, STL
-CommuteAir | https://www.commuteair.com/careers/pilots/ | IAD, IAH
-Endeavor Air | https://www.endeavorair.com/content/endeavor-air/en_us/careers/pilots.html | ATL, CVG, DTW, JFK, LGA, MSP, RDU
-Envoy Air | https://www.envoyair.com/careers/pilots/ | DFW, ORD, MIA, PHX
-GoJet Airlines | https://www.gojetairlines.com/pilot-careers/ | ORD, RDU, STL
-Horizon Air | https://careers.alaskaair.com/career-opportunities/pilots/horizon-air/ | ANC, BOI, GEG, MFR, PAE, PDX, SEA
-Mesa Airlines | https://careers.rjet.com/airline-careers/pilot/ | DFW, IAH, PHX
-Piedmont Airlines | https://piedmont-airlines.com/pilots/ | CLT, MDT, PHL
+CommuteAir (C5) | https://www.commuteair.com/careers/pilots/ | IAD, IAH
+Endeavor Air (9E) | https://www.endeavorair.com/content/endeavor-air/en_us/careers/pilots.html | ATL, CVG, DTW, JFK, LGA, MSP, RDU
+Envoy Air (MQ) | https://www.envoyair.com/careers/pilots/ | DFW, ORD, MIA, PHX
+GoJet Airlines (G7) | https://www.gojetairlines.com/pilot-careers/ | ORD, RDU, STL
+Horizon Air (QX) | https://careers.alaskaair.com/career-opportunities/pilots/horizon-air/ | ANC, BOI, GEG, MFR, PAE, PDX, SEA
+Mesa Airlines (YV) | https://careers.rjet.com/airline-careers/pilot/ | DFW, IAH, PHX
+Piedmont Airlines (PT) | https://piedmont-airlines.com/pilots/ | CLT, MDT, PHL
 PSA Airlines (OH) | https://www.psaairlines.com/first-officers/ | CLT, DAY, DCA, DFW, PHL
 Republic Airways (XY) | https://careers.rjet.com/airline-careers/pilot/ | BOS, CMH, DCA, EWR, IND, JFK, LGA, ORD, PHL, PIT, SDF
-SkyWest | https://www.skywest.com/skywest-airline-jobs/career-guides/pilot-jobs | ATL, AUS, BOI, COS, DEN, DFW, DTW, FAT, IAH, LAX, MSP, ORD, PDX, PHX, PSP, SAN, SEA, SFO, SLC, TUS
+SkyWest (OO) | https://www.skywest.com/skywest-airline-jobs/career-guides/pilot-jobs | ATL, AUS, BOI, COS, DEN, DFW, DTW, FAT, IAH, LAX, MSP, ORD, PDX, PHX, PSP, SAN, SEA, SFO, SLC, TUS
 
 # Fractional Carriers
 
