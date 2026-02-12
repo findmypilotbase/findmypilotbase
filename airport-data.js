@@ -100,7 +100,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-117.6012,34.056]},"properties":{"code":"ONT","name":"Ontario International","city":"Ontario","state":"CA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-87.9048,41.9786]},"properties":{"code":"ORD","name":"Chicago O'Hare International","city":"Chicago","state":"IL"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-76.2012,36.8946]},"properties":{"code":"ORF","name":"Norfolk International Airport","city":"Norfolk","state":"VA"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates”:[-73.1352,41.4786]},”properties":{"code":"OX","name":"Waterbury-Oxford Airport","city”:"Oxford","state":"CT"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates”:[-73.1352,41.4786]},”properties":{"code":"OXC","name":"Waterbury-Oxford Airport","city":"Oxford","state":"CT"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.2817,47.9095]},"properties":{"code":"PAE","name":"Paine Field (Everett)","city":"Everett","state":"WA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.0956,26.6832]},"properties":{"code":"PBI","name":"Palm Beach International Airport","city":"West Palm Beach","state":"FL"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.5906,45.5876]},"properties":{"code":"PDX","name":"Portland International","city":"Portland","state":"OR"}},
