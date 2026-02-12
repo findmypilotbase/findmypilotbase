@@ -7,7 +7,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-74.5775,39.4572]},"properties":{"code":"ACY","name":"Atlantic City International","city":"Atlantic City","state":"NJ"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.8017,42.7483]},"properties":{"code":"ALB","name":"Albany International Airport","city":"Albany","state":"NY"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-149.9964,61.1744]},"properties":{"code":"ANC","name":"Ted Stevens Anchorage International","city":"Anchorage","state":"AK"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.4281,33.6367]},"properties":{"code":"ATL","name":"Hartsfield-Jackson Atlanta International","city":"Atlanta","state":"GA"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-84.4281,33.6367]},"properties":{"code":"ATL","name":"Hartsfield-Jackson Atlanta International","city":"Atlanta","state":"GA"}},"state":"GA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-88.5187,44.2578]},"properties":{"code":"ATW","name":"Appleton International Airport","city":"Appleton","state":"WI"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-97.6699,30.1945]},"properties":{"code":"AUS","name":"Austin-Bergstrom International Airport","city":"Austin","state":"TX"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.5406,35.4371]},"properties":{"code":"AVL","name":"Asheville Regional Airport","city":"Asheville","state":"NC"}},
@@ -129,7 +129,7 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.3755,37.6188]},"properties":{"code":"SFO","name":"San Francisco International","city":"San Francisco","state":"CA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-93.3883,37.2432]},"properties":{"code":"SGF","name":"Springfield-Branson National Airport","city":"Springfield","state":"MO"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-121.9299,37.3619]},"properties":{"code":"SJC","name":"Norman Y. Mineta San Jose International Airport","city":"San Jose","state":"CA"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates”:[-66.0015,18.4381]},"properties":{"code":"SJU","name":"Luis Muñoz Marín International Airport","city":"San Juan","state":"PR"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-66.0015,18.4381]},"properties":{"code":"SJU","name":"Luis Muñoz Marín International Airport","city":"San Juan","state":"PR"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-111.9778,40.7884]},"properties":{"code":"SLC","name":"Salt Lake City International","city":"Salt Lake City","state":"UT"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-121.5908,38.6954]},"properties":{"code":"SMF","name":"Sacramento International Airport","city":"Sacramento","state":"CA"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-117.8682,33.6757]},"properties":{"code":"SNA","name":"John Wayne Airport","city":"Santa Ana","state":"CA"}},
@@ -143,6 +143,6 @@ const airportData = {
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-83.9946,35.8067]},"properties":{"code":"TYS","name":"McGhee Tyson Airport","city":"Knoxville","state":"TN"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-86.5459,30.4915]},"properties":{"code":"VPS","name":"Destin–Fort Walton Beach Airport","city":"Valparaiso","state":"FL"}},
 {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.4192,27.6548]},"properties":{"code":"VRB","name":"Vero Beach Regional Airport","city":"Vero Beach","state":"FL"}},
-{"type":"Feature","geometry":{"type":"Point","coordinates":[-94.3028,36.2795]},"properties":{"code":"XNA","name":"Northwest Arkansas National Airport","city":"Bentonville","state":"AR"}}
+{"type":"Feature","geometry":{"type":"Point","coordinates":[-94.3028,36.2795]},"properties":{"code":"XNA","name":"Northwest Arkansas National Airport","city":"Bentonville","state":"AR"}},"state":"AR"}}
 ]
 };
