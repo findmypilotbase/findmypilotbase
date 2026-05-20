@@ -111,6 +111,7 @@ const airportData = {
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-82.6874,27.9102]},"properties":{"code":"PIE","name":"St. Pete–Clearwater International Airport","city":"Clearwater","state":"FL"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.2327,40.4914]},"properties":{"code":"PIT","name":"Pittsburgh International Airport","city":"Pittsburgh","state":"PA"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-87.1877,30.4729]},"properties":{"code":"PNS","name":"Pensacola International Airport","city":"Pensacola","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-70.8224,43.0769]},"properties":{"code":"PSM","name":"Portsmouth International Airport","city":"Portsmouth","state":"NH"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-116.5063,33.8297]},"properties":{"code":"PSP","name":"Palm Springs International Airport","city":"Palm Springs","state":"CA"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-71.436,41.7249]},"properties":{"code":"PVD","name":"Rhode Island T. F. Green International Airport","city":"Warwick","state":"RI"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-111.7224,40.2190]},"properties":{"code":"PVU","name":"Provo Municipal Airport","city":"Provo","state":"UT"}},
