@@ -103,6 +103,7 @@ const airportData = {
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-73.1352,41.4786]},"properties":{"code":"OXC","name":"Waterbury-Oxford Airport","city":"Oxford","state":"CT"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.2817,47.9095]},"properties":{"code":"PAE","name":"Paine Field (Everett)","city":"Everett","state":"WA"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-80.0956,26.6832]},"properties":{"code":"PBI","name":"Palm Beach International Airport","city":"West Palm Beach","state":"FL"}},
+    {"type":"Feature","geometry":{"type":"Point","coordinates":[-84.3021,33.8761]},"properties":{"code":"PDK","name":"DeKalb-Peachtree Airport","city":"Atlanta","state":"GA"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-122.5906,45.5876]},"properties":{"code":"PDX","name":"Portland International","city":"Portland","state":"OR"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-81.9911,26.9202]},"properties":{"code":"PGD","name":"Punta Gorda Airport","city":"Punta Gorda","state":"FL"}},
     {"type":"Feature","geometry":{"type":"Point","coordinates":[-75.2411,39.8719]},"properties":{"code":"PHL","name":"Philadelphia International","city":"Philadelphia","state":"PA"}},
